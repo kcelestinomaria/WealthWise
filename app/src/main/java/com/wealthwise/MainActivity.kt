@@ -149,8 +149,12 @@ fun WealthWiseApp(
         composable("wallet") {
             val player = gameUiState.currentPlayer
             if (player != null) {
+                // Collect transactions for the current player
+                val transactions by gameViewModel.getTransactionsForPlayer(player.id).collectAsState(initial = emptyList())
+                
                 WalletScreen(
                     player = player,
+                    transactions = transactions,
                     onBack = {
                         navController.navigateUp()
                     }

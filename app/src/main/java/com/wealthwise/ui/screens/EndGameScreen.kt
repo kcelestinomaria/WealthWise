@@ -261,18 +261,15 @@ private fun DrawScope.drawPieChart(
     colors: List<Color>,
     total: Double
 ) {
+    var currentAngle = 0f
     val center = androidx.compose.ui.geometry.Offset(size.width / 2, size.height / 2)
-    val radius = size.minDimension / 2.5f
-    
-    var startAngle = 0f
+    val radius = size.minDimension / 2 * 0.8f
     
     values.forEachIndexed { index, (_, value) ->
         val sweepAngle = (value / total * 360).toFloat()
-        val color = colors.getOrElse(index) { colors.first() }
-        
         drawArc(
-            color = color,
-            startAngle = startAngle,
+            color = colors[index % colors.size],
+            startAngle = currentAngle,
             sweepAngle = sweepAngle,
             useCenter = true,
             topLeft = androidx.compose.ui.geometry.Offset(
@@ -281,32 +278,17 @@ private fun DrawScope.drawPieChart(
             ),
             size = androidx.compose.ui.geometry.Size(radius * 2, radius * 2)
         )
-        
-        // Draw border
-        drawArc(
-            color = Color.White,
-            startAngle = startAngle,
-            sweepAngle = sweepAngle,
-            useCenter = false,
-            style = Stroke(width = 4.dp.toPx()),
-            topLeft = androidx.compose.ui.geometry.Offset(
-                center.x - radius,
-                center.y - radius
-            ),
-            size = androidx.compose.ui.geometry.Size(radius * 2, radius * 2)
-        )
-        
-        startAngle += sweepAngle
+        currentAngle += sweepAngle
     }
 }
 
-private fun getPerformanceMessage(netWorth: Double, role: String): String {
+private fun getPerformanceMessage(netWorth: Double, roleName: String): String {
     return when {
-        netWorth >= 100000 -> "🌟 Outstanding! You've mastered financial management as a $role!"
-        netWorth >= 50000 -> "💪 Excellent work! You've built solid wealth as a $role!"
-        netWorth >= 20000 -> "👍 Good job! You've grown your money as a $role!"
-        netWorth >= 0 -> "📚 Not bad! You finished with positive net worth as a $role!"
-        netWorth >= -20000 -> "💡 Keep learning! Review the Learn Center and try different strategies!"
-        else -> "🎯 Don't give up! Financial literacy takes practice. Play again!"
+        netWorth >= 100000 -> "🎉 Outstanding! You've mastered Kenyan financial tools as a $roleName. Your wealth-building strategy is exemplary!"
+        netWorth >= 50000 -> "🌟 Excellent work! You've built solid wealth as a $roleName. Your financial decisions show great wisdom!"
+        netWorth >= 20000 -> "💪 Well done! You've grown your wealth as a $roleName. You're on the right path to financial freedom!"
+        netWorth >= 0 -> "👍 Good job! You maintained positive net worth as a $roleName. Keep building those financial habits!"
+        netWorth >= -20000 -> "📈 You're learning! As a $roleName, you faced some challenges but there's room for improvement. Try again!"
+        else -> "💡 Great learning experience! Every $roleName faces financial challenges. Use these lessons to build better wealth next time!"
     }
 } 

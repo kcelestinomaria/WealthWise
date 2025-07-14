@@ -255,36 +255,32 @@ private fun AssetRow(
     description: String,
     amount: Double
 ) {
-    WealthCard(
-        backgroundColor = if (amount > 0) MaterialTheme.colorScheme.surface 
-                         else MaterialTheme.colorScheme.surfaceVariant
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
+    if (amount > 0) {
+        WealthCard {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = description,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
                 Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium,
+                    text = formatCurrency(amount),
+                    style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
-                    color = if (amount > 0) MaterialTheme.colorScheme.onSurface
-                           else MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    text = if (amount > 0) description else "Not invested yet",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
-            Text(
-                text = formatCurrency(amount),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = if (amount > 0) MaterialTheme.colorScheme.primary
-                       else MaterialTheme.colorScheme.onSurfaceVariant
-            )
         }
     }
 }
@@ -299,7 +295,8 @@ private fun SummaryRow(
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = label,
@@ -307,11 +304,14 @@ private fun SummaryRow(
             fontWeight = if (isTotal) FontWeight.Bold else FontWeight.Normal
         )
         Text(
-            text = if (isNegative && amount > 0) "-${formatCurrency(amount)}" else formatCurrency(amount),
+            text = if (isNegative) "-${formatCurrency(amount)}" else formatCurrency(amount),
             style = if (isTotal) MaterialTheme.typography.titleMedium else MaterialTheme.typography.bodyLarge,
-            fontWeight = if (isTotal) FontWeight.Bold else FontWeight.Normal,
+            fontWeight = if (isTotal) FontWeight.Bold else FontWeight.SemiBold,
             color = color
         )
+    }
+    if (!isTotal) {
+        Spacer(modifier = Modifier.height(4.dp))
     }
 }
 
@@ -325,10 +325,12 @@ private fun TransactionCard(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column(modifier = Modifier.weight(1f)) {
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
                 Text(
                     text = transaction.description,
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Medium
                 )
                 Text(
@@ -338,10 +340,11 @@ private fun TransactionCard(
                 )
             }
             Text(
-                text = if (transaction.amount >= 0) "+${formatCurrency(transaction.amount)}" else formatCurrency(transaction.amount),
-                style = MaterialTheme.typography.bodyLarge,
+                text = formatCurrency(transaction.amount),
+                style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = if (transaction.amount >= 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
+                color = if (transaction.amount >= 0) MaterialTheme.colorScheme.primary 
+                       else MaterialTheme.colorScheme.error
             )
         }
     }

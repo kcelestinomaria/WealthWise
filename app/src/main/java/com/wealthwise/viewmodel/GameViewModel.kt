@@ -165,4 +165,8 @@ class GameViewModel @Inject constructor(
     fun clearLastResult() {
         _uiState.value = _uiState.value.copy(lastDecisionResult = null)
     }
+    
+    fun getTransactionsForPlayer(playerId: Long): Flow<List<Transaction>> {
+        return playerRepository.getTransactionsByPlayer(playerId)
+    }
 } 
