@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/WealthWise.iml" filepath="$PROJECT_DIR$/.idea/modules/WealthWise.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/WealthWise.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/WealthWise.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/WealthWise.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/WealthWise.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/WealthWise.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/WealthWise.app.unitTest.iml" />
     </modules>
   </component>
 </project>
