@@ -6,11 +6,10 @@ import com.wealthwise.data.dao.LeaderboardDao
 import com.wealthwise.data.model.LeaderboardEntry
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.tasks.await
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class LeaderboardRepository @Inject constructor(
+
+
+class LeaderboardRepository  constructor(
     private val leaderboardDao: LeaderboardDao,
     private val firestore: FirebaseFirestore?
 ) {

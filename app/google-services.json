@@ -1,48 +1,29 @@
 {
   "project_info": {
-    "project_number": "123456789012",
-    "firebase_url": "https://wealthwise-app-default-rtdb.firebaseio.com",
-    "project_id": "wealthwise-app",
-    "storage_bucket": "wealthwise-app.appspot.com"
+    "project_number": "85312912727",
+    "project_id": "wealthwise-58baa",
+    "storage_bucket": "wealthwise-58baa.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:123456789012:android:abcdef123456789012345678",
+        "mobilesdk_app_id": "1:85312912727:android:dae1aedb5def2c57a81212",
         "android_client_info": {
-          "package_name": "com.wealthwise"
+          "package_name": "com.wealthwise.debug"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "123456789012-abcdefghijklmnopqrstuvwxyz123456.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.wealthwise",
-            "certificate_hash": "abcdefghijklmnopqrstuvwxyz1234567890abcdef"
-          }
-        },
-        {
-          "client_id": "123456789012-abcdefghijklmnopqrstuvwxyz123456.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAbCdEfGhIjKlMnOpQrStUvWxYz1234567"
+          "current_key": "AIzaSyBfDp2fDu-OaSDDJyaWflwA0iZrDKN7jF8"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "123456789012-abcdefghijklmnopqrstuvwxyz123456.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
   ],
   "configuration_version": "1"
-} 
+}

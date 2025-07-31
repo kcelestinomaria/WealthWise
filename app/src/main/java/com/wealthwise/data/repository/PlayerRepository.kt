@@ -5,11 +5,10 @@ import com.wealthwise.data.dao.TransactionDao
 import com.wealthwise.data.model.Player
 import com.wealthwise.data.model.Transaction
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class PlayerRepository @Inject constructor(
+
+
+class PlayerRepository  constructor(
     private val playerDao: PlayerDao,
     private val transactionDao: TransactionDao
 ) {

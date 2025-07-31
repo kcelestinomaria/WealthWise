@@ -10,7 +10,7 @@ import com.wealthwise.engine.getGeneralEvents
 import com.wealthwise.engine.getEventsForRole
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+
 
 data class GameUiState(
     val currentPlayer: Player? = null,
@@ -22,7 +22,7 @@ data class GameUiState(
     val lastDecisionResult: String? = null
 )
 
-class GameViewModel @Inject constructor(
+class GameViewModel  constructor(
     private val playerRepository: PlayerRepository,
     private val leaderboardRepository: LeaderboardRepository
 ) : ViewModel() {
