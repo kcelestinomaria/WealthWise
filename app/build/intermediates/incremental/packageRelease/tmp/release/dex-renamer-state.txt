@@ -1,0 +1,4 @@
+#Mon Aug 11 16:20:43 EAT 2025
+base.0=C\:\\Users\\abdir\\Desktop\\WealthWise\\app\\build\\intermediates\\dex\\release\\minifyReleaseWithR8\\classes.dex
+renamed.0=classes.dex
+path.0=classes.dex

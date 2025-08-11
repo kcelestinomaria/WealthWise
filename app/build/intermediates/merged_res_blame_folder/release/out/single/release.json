@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "com.wealthwise.app-merged_res-68:/xml_data_extraction_rules.xml.flat",
+        "source": "com.wealthwise.app-main-69:/xml/data_extraction_rules.xml"
+    },
+    {
+        "merged": "com.wealthwise.app-merged_res-68:/xml_backup_rules.xml.flat",
+        "source": "com.wealthwise.app-main-69:/xml/backup_rules.xml"
+    }
+]
