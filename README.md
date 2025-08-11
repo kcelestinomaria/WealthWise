@@ -122,7 +122,6 @@ WealthWise teaches essential financial concepts:
 2. Install on your Android device
 3. Launch and start your financial journey!
 
-For developers, see [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md) for setup details.
 
 ## 📱 Screenshots
 
@@ -193,20 +192,14 @@ We welcome contributions from the community! Whether you're a developer, designe
 
 See [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md) for development setup.
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 💬 Support & Feedback
 
 ### Get Help
-- **Technical Issues**: Check [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md)
+
 - **Game Questions**: Review this README
 - **Feature Requests**: Open an issue on GitHub
 
-### Connect With Us
-- **Email**: support@wealthwise.app
-- **GitHub**: [WealthWise Repository](https://github.com/your-repo/wealthwise)
 
 ## 🎉 Acknowledgments
 
