@@ -84,13 +84,6 @@ WealthWise transforms financial education into an engaging gaming experience. Pl
 ### Backend & Database
 - **Room Database** - Local data persistence
 - **Firebase Firestore** - Cloud leaderboards
-- **Coroutines** - Asynchronous programming
-- **StateFlow** - Reactive state management
-
-### Architecture
-- **MVVM Pattern** - Clean separation of concerns
-- **Repository Pattern** - Data layer abstraction
-- **Dependency Injection** - Modular, testable code
 
 ## 📚 Educational Value
 
