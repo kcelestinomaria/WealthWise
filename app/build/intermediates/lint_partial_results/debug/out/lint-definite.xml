@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<incidents format="6" by="lint 8.2.2" type="incidents">
+
+    <incident
+        id="RedundantLabel"
+        severity="warning"
+        message="Redundant label can be removed">
+        <fix-attribute
+            description="Delete label"
+            namespace="http://schemas.android.com/apk/res/android"
+            attribute="label"/>
+        <location
+            file="${:app*debug*MAIN*sourceProvider*0*manifest*0}"
+            line="19"
+            column="13"
+            startOffset="758"
+            endLine="19"
+            endColumn="45"
+            endOffset="790"/>
+    </incident>
+
+    <incident
+        id="ModifierParameter"
+        severity="warning"
+        message="Modifier parameter should be the first optional parameter">
+        <location
+            file="${:app*debug*MAIN*sourceProvider*0*javaDir*0}/com/wealthwise/ui/components/AnimatedComponents.kt"
+            line="141"
+            column="5"
+            startOffset="4582"
+            endLine="141"
+            endColumn="13"
+            endOffset="4590"/>
+    </incident>
+
+    <incident
+        id="ModifierParameter"
+        severity="warning"
+        message="Modifier parameter should be the first optional parameter">
+        <location
+            file="${:app*debug*MAIN*sourceProvider*0*javaDir*0}/com/wealthwise/ui/components/CommonComponents.kt"
+            line="48"
+            column="5"
+            startOffset="1457"
+            endLine="48"
+            endColumn="13"
+            endOffset="1465"/>
+    </incident>
+
+    <incident
+        id="OldTargetApi"
+        severity="warning"
+        message="Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the android.os.Build.VERSION_CODES javadoc for details.">
+        <fix-replace
+            description="Update targetSdkVersion to 36"
+            oldString="34"
+            replacement="36"/>
+        <location
+            file="${:app*projectDir}/build.gradle"
+            line="16"
+            column="9"
+            startOffset="373"
+            endLine="16"
+            endColumn="21"
+            endOffset="385"/>
+    </incident>
+
+    <incident
+        id="KaptUsageInsteadOfKsp"
+        severity="warning"
+        message="This library supports using KSP instead of kapt, which greatly improves performance. Learn more: https://developer.android.com/studio/build/migrate-to-ksp">
+        <show-url
+            description="Learn about how to enable KSP and use the KSP processor for this dependency instead"
+            url="https://developer.android.com/studio/build/migrate-to-ksp"/>
+        <location
+            file="${:app*projectDir}/build.gradle"
+            line="97"
+            column="5"
+            startOffset="3076"
+            endLine="97"
+            endColumn="53"
+            endOffset="3124"/>
+    </incident>
+
+    <incident
+        id="NotInterpolated"
+        severity="error"
+        message="It looks like you are trying to substitute a version variable, but using single quotes (&apos;). For Groovy string interpolation you must use double quotes (&quot;).">
+        <fix-replace
+            description="Replace single quotes with double quotes"
+            oldString="&apos;androidx.room:room-testing:$room_version&apos;"
+            replacement="&quot;androidx.room:room-testing:$room_version&quot;"/>
+        <location
+            file="${:app*projectDir}/build.gradle"
+            line="120"
+            column="5"
+            startOffset="4024"
+            endLine="120"
+            endColumn="66"
+            endOffset="4085"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.core:core-ktx than 1.12.0 is available: 1.16.0">
+        <fix-replace
+            description="Change to 1.16.0"
+            family="Update versions"
+            oldString="1.12.0"
+            replacement="1.16.0"/>
+        <location
+            file="${:app*projectDir}/build.gradle"
+            line="71"
+            column="20"
+            startOffset="1799"
+            endLine="71"
+            endColumn="51"
+            endOffset="1830"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.lifecycle:lifecycle-runtime-ktx than 2.7.0 is available: 2.9.2">
+        <fix-replace
+            description="Change to 2.9.2"
+            family="Update versions"
+            oldString="2.7.0"
+            replacement="2.9.2"/>
+        <location
+            file="${:app*projectDir}/build.gradle"
+            line="72"
+            column="20"
+            startOffset="1851"
+            endLine="72"
+            endColumn="68"
+            endOffset="1899"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.activity:activity-compose than 1.8.2 is available: 1.10.1">
+        <fix-replace
+            description="Change to 1.10.1"
+            family="Update versions"
+            oldString="1.8.2"
+            replacement="1.10.1"/>
+        <location
+            file="${:app*projectDir}/build.gradle"
+            line="73"
+            column="20"
+            startOffset="1920"
+            endLine="73"
+            endColumn="62"
+            endOffset="1962"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.appcompat:appcompat than 1.6.1 is available: 1.7.1">
+        <fix-replace
+            description="Change to 1.7.1"
+            family="Update versions"
+            oldString="1.6.1"
+            replacement="1.7.1"/>
+        <location
+            file="${:app*projectDir}/build.gradle"
+            line="75"
+            column="20"
+            startOffset="2043"
+            endLine="75"
+            endColumn="56"
+            endOffset="2079"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.compose:compose-bom than 2024.02.00 is available: 2025.07.00">
+        <fix-replace
+            description="Change to 2025.07.00"
+            family="Update versions"
+            oldString="2024.02.00"
+            replacement="2025.07.00"/>
+        <location
+            file="${:app*projectDir}/build.gradle"
+            line="78"
+            column="29"
+            startOffset="2165"
+            endLine="78"
+            endColumn="70"
+            endOffset="2206"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.compose.material3:material3 than 1.1.2 is available: 1.3.2">
+        <fix-replace
+            description="Change to 1.3.2"
+            family="Update versions"
+            oldString="1.1.2"
+            replacement="1.3.2"/>
+        <location
+            file="${:app*projectDir}/build.gradle"
+            line="81"
+            column="20"
+            startOffset="2334"
+            endLine="81"
+            endColumn="64"
+            endOffset="2378"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.navigation:navigation-compose than 2.7.6 is available: 2.9.3">
+        <fix-replace
+            description="Change to 2.9.3"
+            family="Update versions"
+            oldString="2.7.6"
+            replacement="2.9.3"/>
+        <location
+            file="${:app*projectDir}/build.gradle"
+            line="87"
+            column="20"
+            startOffset="2619"
+            endLine="87"
+            endColumn="66"
+            endOffset="2665"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.lifecycle:lifecycle-viewmodel-compose than 2.7.0 is available: 2.9.2">
+        <fix-replace
+            description="Change to 2.9.2"
+            family="Update versions"
+            oldString="2.7.0"
+            replacement="2.9.2"/>
+        <location
+            file="${:app*projectDir}/build.gradle"
+            line="90"
+            column="20"
+            startOffset="2722"
+            endLine="90"
+            endColumn="74"
+            endOffset="2776"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.lifecycle:lifecycle-viewmodel-ktx than 2.7.0 is available: 2.9.2">
+        <fix-replace
+            description="Change to 2.9.2"
+            family="Update versions"
+            oldString="2.7.0"
+            replacement="2.9.2"/>
+        <location
+            file="${:app*projectDir}/build.gradle"
+            line="91"
+            column="20"
+            startOffset="2797"
+            endLine="91"
+            endColumn="70"
+            endOffset="2847"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.lifecycle:lifecycle-runtime-compose than 2.7.0 is available: 2.9.2">
+        <fix-replace
+            description="Change to 2.9.2"
+            family="Update versions"
+            oldString="2.7.0"
+            replacement="2.9.2"/>
+        <location
+            file="${:app*projectDir}/build.gradle"
+            line="92"
+            column="20"
+            startOffset="2868"
+            endLine="92"
+            endColumn="72"
+            endOffset="2920"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.room:room-runtime than 2.6.1 is available: 2.7.2">
+        <location
+            file="${:app*projectDir}/build.gradle"
+            line="95"
+            column="20"
+            startOffset="2969"
+            endLine="95"
+            endColumn="62"
+            endOffset="3011"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.room:room-ktx than 2.6.1 is available: 2.7.2">
+        <location
+            file="${:app*projectDir}/build.gradle"
+            line="96"
+            column="20"
+            startOffset="3032"
+            endLine="96"
+            endColumn="58"
+            endOffset="3070"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.room:room-testing than 2.6.1 is available: 2.7.2">
+        <location
+            file="${:app*projectDir}/build.gradle"
+            line="120"
+            column="24"
+            startOffset="4043"
+            endLine="120"
+            endColumn="66"
+            endOffset="4085"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.test.ext:junit than 1.1.5 is available: 1.3.0">
+        <fix-replace
+            description="Change to 1.3.0"
+            family="Update versions"
+            oldString="1.1.5"
+            replacement="1.3.0"/>
+        <location
+            file="${:app*projectDir}/build.gradle"
+            line="125"
+            column="31"
+            startOffset="4313"
+            endLine="125"
+            endColumn="62"
+            endOffset="4344"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.test.espresso:espresso-core than 3.5.1 is available: 3.7.0">
+        <fix-replace
+            description="Change to 3.7.0"
+            family="Update versions"
+            oldString="3.5.1"
+            replacement="3.7.0"/>
+        <location
+            file="${:app*projectDir}/build.gradle"
+            line="126"
+            column="31"
+            startOffset="4376"
+            endLine="126"
+            endColumn="75"
+            endOffset="4420"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.compose:compose-bom than 2024.02.00 is available: 2025.07.00">
+        <fix-replace
+            description="Change to 2025.07.00"
+            family="Update versions"
+            oldString="2024.02.00"
+            replacement="2025.07.00"/>
+        <location
+            file="${:app*projectDir}/build.gradle"
+            line="127"
+            column="40"
+            startOffset="4461"
+            endLine="127"
+            endColumn="81"
+            endOffset="4502"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.navigation:navigation-testing than 2.7.6 is available: 2.9.3">
+        <fix-replace
+            description="Change to 2.9.3"
+            family="Update versions"
+            oldString="2.7.6"
+            replacement="2.9.3"/>
+        <location
+            file="${:app*projectDir}/build.gradle"
+            line="129"
+            column="31"
+            startOffset="4603"
+            endLine="129"
+            endColumn="77"
+            endOffset="4649"/>
+    </incident>
+
+</incidents>

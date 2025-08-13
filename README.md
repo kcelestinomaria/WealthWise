@@ -1,236 +1,223 @@
-# 💰 WealthWise - Kenyan Financial Literacy Game
+# 💰 WealthWise - Financial Literacy Game
 
-A gamified Android app that teaches young Kenyans about financial literacy through realistic 30-day simulations of different careers and financial decisions.
+![WealthWise Logo](https://img.shields.io/badge/WealthWise-Financial%20Education-brightgreen)
+![Android](https://img.shields.io/badge/Android-API%2024+-brightgreen)
+![Kotlin](https://img.shields.io/badge/Kotlin-1.8+-blue)
+![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-latest-blue)
 
-## 📱 Overview
+**WealthWise** is an interactive financial literacy game designed specifically for Kenyan users to learn essential money management skills through engaging gameplay. Make financial decisions, set goals, and build wealth in a safe, simulated environment.
 
-WealthWise is an educational mobile game built with **Kotlin** and **Jetpack Compose** that simulates real-world financial scenarios specific to Kenya. Players choose from 4 different roles and navigate 30 days of financial decisions, learning about local financial tools like SACCOs, MMFs, Fuliza, and more.
+## 🎯 Overview
 
-### 🎯 Key Features
+WealthWise transforms financial education into an engaging gaming experience. Players navigate through real-world financial scenarios, make strategic decisions about budgeting, investing, and goal-setting while learning practical money management skills relevant to the Kenyan context.
 
-- **4 Career Roles**: Student, Boda Boda Rider, Mama Mboga, Hustler
-- **Real Kenyan Financial Tools**: SACCOs, MMFs, Fuliza, Chamas, REITs, Land Investment
-- **30-Day Simulation**: Daily events with meaningful choices
-- **Educational Content**: Learn Center with detailed explanations
-- **Leaderboard**: Firebase-powered ranking system
-- **Offline-First**: Play without internet, sync when available
+### 🌟 Key Features
 
-## 🏗️ Technical Architecture
+#### 📊 **Financial Dashboard**
+- Real-time tracking of balance, income, debt, and net worth
+- Visual financial metrics with Kenyan Shilling (Ksh) formatting
+- Daily financial activity log
 
-### Tech Stack
-- **Language**: Kotlin
-- **UI Framework**: Jetpack Compose with Material3
-- **Architecture**: MVVM with StateFlow
-- **Database**: Room (SQLite)
-- **Cloud**: Firebase Firestore
-- **Navigation**: Navigation Compose
-- **Dependency Injection**: Manual DI with ViewModels
+#### 🎯 **Goal Management**
+- Set and track personal financial goals
+- Multiple goal categories (Emergency Fund, Purchases, Investments, Travel)
+- Visual progress tracking with contribution functionality
+- Add custom goals with target amounts
 
-### Project Structure
-```
-app/src/main/java/com/wealthwise/
-├── data/
-│   ├── dao/                 # Room DAOs
-│   ├── database/            # Database and converters
-│   ├── model/               # Data classes
-│   └── repository/          # Repository pattern
-├── engine/
-│   ├── GameEngine.kt        # Core game logic
-│   └── GameEvents.kt        # Event definitions
-├── ui/
-│   ├── components/          # Reusable UI components
-│   ├── screens/             # Screen composables
-│   └── theme/               # Material3 theme
-├── viewmodel/               # ViewModels with StateFlow
-└── MainActivity.kt          # Main entry point
-```
+#### 💼 **Career Simulation**
+- Choose from various Kenyan career paths
+- Realistic salary structures based on local market
+- Career progression affects income and opportunities
 
-## 🎮 Game Mechanics
+#### 🏆 **Achievement System**
+- Unlock achievements for financial milestones
+- Track progress with detailed statistics
+- Share progress with friends
 
-### Roles & Starting Conditions
+#### 💳 **Financial Actions**
+- **Pay Bills**: Manage monthly expenses responsibly
+- **Invest**: Learn investment basics with 8% annual returns
+- **Take Loans**: Understand credit and debt management (12% interest)
 
-| Role | Starting Cash | Starting Debt | Daily Income Range |
-|------|---------------|---------------|-------------------|
-| 🎓 Student | KSh 2,000 | KSh 30,000 (HELB) | KSh 300-800 |
-| 🏍️ Boda Boda Rider | KSh 5,000 | KSh 0 | KSh 800-2,000 |
-| 🥬 Mama Mboga | KSh 8,000 | KSh 0 | KSh 500-1,200 |
-| 💼 Hustler | KSh 3,000 | KSh 0 | KSh 200-3,000 |
+#### 📱 **Modern UI/UX**
+- Material 3 design system
+- Responsive layouts for all screen sizes
+- Smooth animations and intuitive navigation
+- Dark/Light theme support
 
-### Financial Tools Simulated
+## 🎮 How to Play
 
-- **🏦 SACCOs**: Safe savings with 6-10% returns, loan access
-- **📊 MMFs**: 8-12% returns, 7-day withdrawal
-- **📱 Fuliza**: High-interest overdraft (emergency use)
-- **👥 Chamas**: Group savings with rotation payouts
-- **🏢 REITs**: Real estate investment trusts
-- **🏡 Land**: High-value, illiquid asset
-- **💳 Loans**: HELB, M-Shwari with realistic interest
+### 1. **Getting Started**
+- Create your profile and choose a career path
+- Start with a balance based on your selected profession
+- Navigate through the tutorial to learn the basics
 
-### Scoring System
-**Net Worth = Cash + Assets - Debt**
-- Cash: Immediate liquidity
-- Assets: SACCO + MMF + Land + REITs
-- Debt: All outstanding loans
+### 2. **Daily Management**
+- Monitor your financial dashboard regularly
+- Pay monthly bills to advance to the next day
+- Make investment decisions to grow wealth
+
+### 3. **Setting Goals**
+- Tap the **+** button in the Goals tab
+- Choose a category (Emergency Fund, Purchase, Investment, Travel)
+- Set a target amount and description
+- Contribute to goals by clicking on goal cards
+
+### 4. **Making Financial Decisions**
+- **Bills**: Essential monthly expenses must be paid
+- **Investments**: Grow your wealth with calculated risks
+- **Loans**: Access credit when needed (use responsibly!)
+
+### 5. **Track Progress**
+- View achievements in your profile
+- Monitor statistics and financial growth
+- Share your success with friends
+
+## 🛠️ Technology Stack
+
+### Frontend
+- **Kotlin** - Modern, concise programming language
+- **Jetpack Compose** - Declarative UI framework
+- **Material 3** - Latest design system guidelines
+- **Navigation Compose** - Type-safe navigation
+
+### Backend & Database
+- **Room Database** - Local data persistence
+- **Firebase Firestore** - Cloud leaderboards
+- **Coroutines** - Asynchronous programming
+- **StateFlow** - Reactive state management
+
+### Architecture
+- **MVVM Pattern** - Clean separation of concerns
+- **Repository Pattern** - Data layer abstraction
+- **Dependency Injection** - Modular, testable code
 
 ## 📚 Educational Value
 
-### Learning Outcomes
-- **Budgeting**: Daily income vs. expenses
-- **Saving**: Understanding different savings vehicles
-- **Investing**: Risk vs. return concepts
-- **Debt Management**: Avoiding predatory lending
-- **Emergency Planning**: Building financial resilience
+WealthWise teaches essential financial concepts:
 
-### Real-World Application
-All scenarios are based on actual Kenyan financial products and common situations young adults face, making the learning directly applicable to real life.
+### 💡 **Core Learning Objectives**
+- **Budgeting**: Balance income and expenses effectively
+- **Goal Setting**: Plan and save for specific financial objectives
+- **Investment Basics**: Understand risk, return, and compound growth
+- **Debt Management**: Learn responsible borrowing and repayment
+- **Emergency Planning**: Build financial safety nets
+- **Career Planning**: Understand income potential across professions
+
+### 🇰🇪 **Kenyan Context**
+- Currency in Kenyan Shillings (Ksh)
+- Realistic salary ranges for local careers
+- Culturally relevant financial scenarios
+- Local investment and savings concepts
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Android Studio Arctic Fox or later
-- Android SDK API 24+ (Android 7.0)
-- Firebase account (for leaderboard)
+- Android 7.0 (API 24) or higher
+- 100MB+ available storage
+- Internet connection for leaderboards (optional)
 
 ### Installation
+1. Download the APK from releases
+2. Install on your Android device
+3. Launch and start your financial journey!
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/wealthwise.git
-   cd wealthwise
-   ```
+For developers, see [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md) for setup details.
 
-2. **Set up Firebase**
-   - Create a new Firebase project
-   - Add an Android app with package name `com.wealthwise`
-   - Download `google-services.json` to `app/` directory
-   - Enable Firestore Database
+## 📱 Screenshots
 
-3. **Build and run**
-   ```bash
-   ./gradlew assembleDebug
-   ./gradlew installDebug
-   ```
+*Note: Screenshots will be added as the app develops*
 
-### Firebase Configuration
+| Dashboard | Goals | Profile |
+|-----------|-------|---------|
+| Financial overview | Track progress | Achievements |
 
-Replace the template values in `app/google-services.json`:
-```json
-{
-  "project_info": {
-    "project_id": "your-project-id",
-    "project_number": "your-project-number"
-  },
-  "client": [{
-    "client_info": {
-      "mobilesdk_app_id": "your-app-id",
-      "android_client_info": {
-        "package_name": "com.wealthwise"
-      }
-    },
-    "api_key": [{"current_key": "your-api-key"}]
-  }]
-}
-```
+## 🎯 Target Audience
 
-## 🎨 UI/UX Design
+### Primary Users
+- **Young Adults (18-30)**: Starting their financial journey
+- **Students**: Learning money management basics  
+- **Working Professionals**: Improving financial habits
+- **Educators**: Teaching financial literacy concepts
 
-### Design Principles
-- **Material3**: Modern, accessible design
-- **Kenyan Context**: Culturally relevant emojis and language
-- **Financial Clarity**: Clear money displays with KSh formatting
-- **Gamification**: Progress indicators, achievements, rankings
+### Use Cases
+- **Personal Learning**: Self-paced financial education
+- **Classroom Tool**: Interactive teaching aid
+- **Corporate Training**: Employee financial wellness
+- **Family Education**: Parents teaching children
 
-### Color Scheme
-- Primary: Wealth Green (#4CAF50)
-- Secondary: Wealth Gold (#FFC107)
-- Error: Red for debt/warnings
-- Success: Green for positive outcomes
+## 🏆 Game Progression
 
-## 🧪 Testing
+### Beginner Level
+- Learn basic budgeting
+- Set first savings goal
+- Make initial investment
+- Understand expense management
 
-Run unit tests for game logic:
-```bash
-./gradlew test
-```
+### Intermediate Level
+- Manage multiple goals simultaneously
+- Balance debt and investments
+- Optimize monthly cash flow
+- Unlock career achievements
 
-Key test coverage:
-- ✅ Player calculations (net worth, assets)
-- ✅ Game engine decision processing
-- ✅ Financial tool simulations
-- ✅ Role-specific income generation
-- ✅ Database operations
+### Advanced Level
+- Master complex financial scenarios
+- Achieve high net worth targets
+- Complete all achievement categories
+- Compete on global leaderboards
 
-## 📊 Performance
+## 📈 Future Features
 
-### Offline-First Architecture
-- All gameplay data stored locally in Room
-- Leaderboard syncs to Firebase when online
-- No internet required for core gameplay
+### Upcoming Enhancements
+- **Multiplayer Challenges**: Compete with friends
+- **Advanced Investment Options**: Stocks, bonds, cryptocurrencies
+- **Real Estate Module**: Property investment simulation
+- **Business Simulation**: Entrepreneurship scenarios
+- **Insurance Planning**: Risk management education
+- **Tax Planning**: Understanding tax implications
 
-### Database Schema
-- **Players**: Current game state
-- **Transactions**: Financial history
-- **Leaderboard**: Final scores for ranking
+### Community Features
+- **Discussion Forums**: Financial literacy discussions
+- **Mentor System**: Connect with financial experts
+- **Study Groups**: Collaborative learning experiences
 
-## 🔄 Game Flow
+## 🤝 Contributing
 
-1. **Home Screen**: Role selection and player name
-2. **Daily Turns**: Event → Decision → Result (×30 days)
-3. **Wallet**: Real-time financial tracking
-4. **Learn Center**: Educational content
-5. **End Game**: Final score and ranking
-6. **Leaderboard**: Global competition
+We welcome contributions from the community! Whether you're a developer, designer, or financial expert, there are ways to help improve WealthWise.
 
-## 🌟 Key Features in Detail
+### How to Contribute
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
 
-### Smart Decision Engine
-- Context-aware events based on role and day
-- Realistic financial consequences
-- Educational feedback on every choice
-
-### Comprehensive Financial Tracking
-- Real-time net worth calculation
-- Transaction history
-- Asset breakdown visualization
-
-### Educational Integration
-- In-context tips during gameplay
-- Detailed Learn Center with pros/cons
-- Real-world application examples
-
-## 🛣️ Future Enhancements
-
-- **Multiplayer**: Family/friend challenges
-- **Advanced Analytics**: Spending pattern insights
-- **More Roles**: Teacher, Mechanic, Farmer
-- **Regional Variants**: Different county scenarios
-- **Achievement System**: Financial milestones
+See [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md) for development setup.
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🤝 Contributing
+## 💬 Support & Feedback
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+### Get Help
+- **Technical Issues**: Check [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md)
+- **Game Questions**: Review this README
+- **Feature Requests**: Open an issue on GitHub
 
-## 📞 Support
+### Connect With Us
+- **Email**: support@wealthwise.app
+- **GitHub**: [WealthWise Repository](https://github.com/your-repo/wealthwise)
 
-For support or questions about WealthWise:
-- Create an issue on GitHub
-- Email: support@wealthwise.app
+## 🎉 Acknowledgments
 
-## 🙏 Acknowledgments
-
-- Kenya's financial inclusion initiatives
-- Local SACCOs and MMF providers
-- Youth financial literacy advocates
-- Open source Android community
+Special thanks to:
+- Financial literacy educators in Kenya
+- Beta testers and community feedback
+- Open source libraries and frameworks used
+- Android development community
 
 ---
 
-**Made with ❤️ for Kenya's financial future** 
+**Start your financial journey today with WealthWise! 💰📈**
+
+*Built with ❤️ for Kenyan Financial Literacy*

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="emerald_100">#FFDCFCE7</color>
+    <color name="emerald_400">#FF34D399</color>
+    <color name="emerald_50">#FFF0FDF4</color>
+    <color name="emerald_500">#FF10B981</color>
+    <color name="emerald_600">#FF059669</color>
+    <color name="emerald_900">#FF064E3B</color>
+    <color name="gray_100">#FFF3F4F6</color>
+    <color name="gray_200">#FFE5E7EB</color>
+    <color name="gray_300">#FFD1D5DB</color>
+    <color name="gray_400">#FF9CA3AF</color>
+    <color name="gray_50">#FFF9FAFB</color>
+    <color name="gray_500">#FF6B7280</color>
+    <color name="gray_600">#FF4B5563</color>
+    <color name="gray_700">#FF374151</color>
+    <color name="gray_800">#FF1F2937</color>
+    <color name="gray_900">#FF111827</color>
+    <color name="sky_100">#FFE0F2FE</color>
+    <color name="sky_400">#FF38BDF8</color>
+    <color name="sky_50">#FFF0F9FF</color>
+    <color name="sky_500">#FF0EA5E9</color>
+    <color name="sky_600">#FF0284C7</color>
+    <color name="sky_900">#FF0C4A6E</color>
+    <color name="wealth_background">#FFF0FDF4</color>
+    <color name="wealth_blue">#FF0EA5E9</color>
+    <color name="wealth_dark_green">#FF059669</color>
+    <color name="wealth_gold">#FFFFC107</color>
+    <color name="wealth_green">#FF10B981</color>
+    <color name="wealth_on_surface">#FF111827</color>
+    <color name="wealth_red">#FFEF4444</color>
+    <color name="wealth_surface">#FFFFFFFF</color>
+    <color name="white">#FFFFFFFF</color>
+    <string name="app_name">WealthWise</string>
+    <string name="assets">Assets</string>
+    <string name="boda_rider">Boda Boda Rider 🏍️</string>
+    <string name="cash">Cash</string>
+    <string name="chama">Chama</string>
+    <string name="choose_role">Choose Your Role</string>
+    <string name="day">Day</string>
+    <string name="debt">Debt</string>
+    <string name="default_web_client_id" translatable="false">123456789012-abcdefghijklmnopqrstuvwxyz123456.apps.googleusercontent.com</string>
+    <string name="final_score">Final Score</string>
+    <string name="firebase_database_url" translatable="false">https://wealthwise-app-default-rtdb.firebaseio.com</string>
+    <string name="fuliza">Fuliza</string>
+    <string name="gcm_defaultSenderId" translatable="false">123456789012</string>
+    <string name="google_api_key" translatable="false">AIzaSyAbCdEfGhIjKlMnOpQrStUvWxYz1234567</string>
+    <string name="google_app_id" translatable="false">1:123456789012:android:abcdef123456789012345678</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyAbCdEfGhIjKlMnOpQrStUvWxYz1234567</string>
+    <string name="google_storage_bucket" translatable="false">wealthwise-app.appspot.com</string>
+    <string name="hustler">Hustler 💼</string>
+    <string name="land">Land</string>
+    <string name="leaderboard">Leaderboard 🏆</string>
+    <string name="learn_center">Learn Center 📚</string>
+    <string name="mama_mboga">Mama Mboga 🥬</string>
+    <string name="mmf">MMF</string>
+    <string name="net_worth">Net Worth</string>
+    <string name="play_again">Play Again</string>
+    <string name="project_id" translatable="false">wealthwise-app</string>
+    <string name="rank">Rank</string>
+    <string name="reits">REITs</string>
+    <string name="sacco">SACCO</string>
+    <string name="share_score">Share Score</string>
+    <string name="start_game">Start Game 🚀</string>
+    <string name="student">Student 🎓</string>
+    <string name="wallet">Wallet 💳</string>
+    <string name="welcome_title">Welcome to WealthWise! 💰</string>
+    <style name="Theme.WealthWise" parent="Theme.AppCompat.DayNight.NoActionBar">
+        
+        <item name="colorPrimary">@color/wealth_green</item>
+        <item name="colorPrimaryDark">@color/wealth_dark_green</item>
+        <item name="colorAccent">@color/wealth_gold</item>
+        
+        <item name="android:windowBackground">@color/wealth_background</item>
+    </style>
+</resources>

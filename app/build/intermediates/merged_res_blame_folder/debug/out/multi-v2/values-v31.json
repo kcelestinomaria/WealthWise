@@ -1,0 +1,20 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.wealthwise.app-mergeDebugResources-70:/values-v31/values-v31.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\abdir\\.gradle\\caches\\transforms-3\\e2d3c26d5e3b4c0ea5758018113abcc7\\transformed\\jetified-core-splashscreen-1.0.1\\res\\values-v31\\values-v31.xml",
+                    "from": {
+                        "startLines": "2,9",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,473",
+                        "endLines": "8,13",
+                        "endColumns": "12,12",
+                        "endOffsets": "468,697"
+                    }
+                }
+            ]
+        }
+    ]
+}
