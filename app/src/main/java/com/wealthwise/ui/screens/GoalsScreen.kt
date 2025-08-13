@@ -52,7 +52,9 @@ fun GoalsScreen(
     ) {
         // Scrollable list of goals
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 80.dp), // Space for FAB
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
@@ -97,11 +99,6 @@ fun GoalsScreen(
                     numberFormat = numberFormat,
                     onClick = { onGoalClick(goal) }  // Open edit dialog when card tapped
                 )
-            }
-            
-            // Bottom spacing so FAB doesn't overlap content
-            item {
-                Spacer(modifier = Modifier.height(80.dp))
             }
         }
         

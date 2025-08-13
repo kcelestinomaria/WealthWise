@@ -279,18 +279,20 @@ fun WealthWiseApp() {
             }
             
             // Edit existing goal dialog - contribute money or remove goal
-            if (uiState.showEditGoalDialog && uiState.selectedGoal != null) {
-                EditGoalDialog(
-                    goal = uiState.selectedGoal,
-                    gameState = gameState,
-                    onDismiss = { viewModel.hideEditGoalDialog() },
-                    onContribute = { amount ->
-                        viewModel.updateGoal(uiState.selectedGoal.id, amount)  // Add money to goal
-                    },
-                    onRemove = {
-                        viewModel.removeGoal(uiState.selectedGoal.id)  // Delete goal entirely
-                    }
-                )
+            uiState.selectedGoal?.let { selectedGoal ->
+                if (uiState.showEditGoalDialog) {
+                    EditGoalDialog(
+                        goal = selectedGoal,
+                        gameState = gameState,
+                        onDismiss = { viewModel.hideEditGoalDialog() },
+                        onContribute = { amount ->
+                            viewModel.updateGoal(selectedGoal.id, amount)  // Add money to goal
+                        },
+                        onRemove = {
+                            viewModel.removeGoal(selectedGoal.id)  // Delete goal entirely
+                        }
+                    )
+                }
             }
             
             // Show messages
