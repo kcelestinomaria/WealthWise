@@ -181,17 +181,7 @@ For developers, see [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md) for setup det
 - **Mentor System**: Connect with financial experts
 - **Study Groups**: Collaborative learning experiences
 
-## 🤝 Contributing
 
-We welcome contributions from the community! Whether you're a developer, designer, or financial expert, there are ways to help improve WealthWise.
-
-### How to Contribute
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
-
-See [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md) for development setup.
 
 ## 📄 License
 
@@ -204,20 +194,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Game Questions**: Review this README
 - **Feature Requests**: Open an issue on GitHub
 
-### Connect With Us
-- **Email**: support@wealthwise.app
-- **GitHub**: [WealthWise Repository](https://github.com/your-repo/wealthwise)
-
-## 🎉 Acknowledgments
-
-Special thanks to:
-- Financial literacy educators in Kenya
-- Beta testers and community feedback
-- Open source libraries and frameworks used
-- Android development community
-
----
-
-**Start your financial journey today with WealthWise! 💰📈**
-
-*Built with ❤️ for Kenyan Financial Literacy*
