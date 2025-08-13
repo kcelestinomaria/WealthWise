@@ -12,7 +12,20 @@
           "package_name": "com.wealthwise.debug"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "85312912727-dkl574m864he18nffngtlvmbkm6oinf0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.wealthwise.debug",
+            "certificate_hash": "0e727f4695721ab7fb6554ea555ae940439fb53a"
+          }
+        },
+        {
+          "client_id": "85312912727-7qgrutegvadtln28oa34tnh12t4g8u0t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBfDp2fDu-OaSDDJyaWflwA0iZrDKN7jF8"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "85312912727-7qgrutegvadtln28oa34tnh12t4g8u0t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

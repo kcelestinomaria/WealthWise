@@ -1,6 +1,5 @@
 package com.wealthwise.viewmodel
 
-import android.app.GameState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wealthwise.data.model.*
@@ -10,6 +9,12 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
+import com.wealthwise.data.model.GameState
+import com.wealthwise.data.model.Goal
+import com.wealthwise.data.model.Career
+import com.wealthwise.data.model.GoalCategory
+import com.wealthwise.data.model.TransactionType
+import com.wealthwise.data.model.CareersData
 import kotlin.text.Typography.dagger
 
 /**
@@ -109,7 +114,7 @@ class WealthWiseViewModel @Inject constructor(
                         career = sessionEntity.career,
                         monthlyExpenses = sessionEntity.monthlyExpenses,
                         isOnboardingCompleted = true,
-                        selectedCareerId = sessionEntity.careerId,
+                        selectedCareerId = sessionEntity.careerId.toString(),
                         goals = sessionEntity.goals
                     )
                     _gameState.value = updatedGameState

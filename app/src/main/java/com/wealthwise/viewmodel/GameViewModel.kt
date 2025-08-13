@@ -2,7 +2,14 @@ package com.wealthwise.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wealthwise.data.model.*
+import com.wealthwise.data.database.entities.TransactionEntity
+import com.wealthwise.data.model.DecisionOption
+import com.wealthwise.data.model.LeaderboardEntry
+import com.wealthwise.data.model.Player
+import com.wealthwise.data.model.Role
+import com.wealthwise.data.model.Transaction
+import com.wealthwise.data.model.TransactionType
+import com.wealthwise.data.model.TurnEvent
 import com.wealthwise.data.repository.PlayerRepository
 import com.wealthwise.data.repository.LeaderboardRepository
 import com.wealthwise.engine.GameEngine
@@ -10,6 +17,7 @@ import com.wealthwise.engine.getGeneralEvents
 import com.wealthwise.engine.getEventsForRole
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.sql.Date
 
 
 data class GameUiState(
@@ -81,9 +89,22 @@ class GameViewModel  constructor(
                 
                 // Update player
                 playerRepository.updatePlayer(gameResult.updatedPlayer)
-                
+
+                // Convert Transaction to TransactionEntity before inserting
+                val transactionEntity = TransactionEntity(
+                    sessionId = "", // You'll need to provide this
+                    playerId = player.id.toString(),
+                    type = gameResult.transaction.type,
+                    amount = gameResult.transaction.amount.toInt(),
+                    description = gameResult.transaction.description,
+                    day = gameResult.transaction.day,
+                    balanceBefore = 0, // You'll need to provide these
+                    balanceAfter = 0,
+                    createdAt = Date(gameResult.transaction.timestamp)
+                )
+
                 // Insert transaction
-                playerRepository.insertTransaction(gameResult.transaction)
+                playerRepository.insertTransaction(transactionEntity)
                 
                 // Update UI with result
                 _uiState.value = _uiState.value.copy(
@@ -116,16 +137,20 @@ class GameViewModel  constructor(
             viewModelScope.launch {
                 val updatedPlayer = player.copy(cash = player.cash + income)
                 playerRepository.updatePlayer(updatedPlayer)
-                
-                // Record income transaction
-                val transaction = Transaction(
-                    playerId = player.id,
-                    day = player.currentDay,
+
+                // Record income transaction - convert to TransactionEntity
+                val transactionEntity = TransactionEntity(
+                    sessionId = "", // You should provide the actual session ID here
+                    playerId = player.id.toString(),
                     type = TransactionType.INCOME,
-                    amount = income,
-                    description = "Daily income (${player.role.displayName})"
+                    amount = income.toInt(),
+                    description = "Daily income (${player.role.displayName})",
+                    day = player.currentDay,
+                    balanceBefore = player.cash.toInt(),
+                    balanceAfter = (player.cash + income).toInt(),
+                    createdAt = Date(System.currentTimeMillis())
                 )
-                playerRepository.insertTransaction(transaction)
+                playerRepository.insertTransaction(transactionEntity)
             }
         }
     }
@@ -165,8 +190,21 @@ class GameViewModel  constructor(
     fun clearLastResult() {
         _uiState.value = _uiState.value.copy(lastDecisionResult = null)
     }
-    
+
     fun getTransactionsForPlayer(playerId: Long): Flow<List<Transaction>> {
         return playerRepository.getTransactionsByPlayer(playerId)
+            .map { entityList ->
+                entityList.map { entity ->
+                    Transaction(
+                        id = entity.transactionId.hashCode().toLong(),
+                        playerId = entity.playerId.toLong(),
+                        day = entity.day,
+                        type = entity.type,
+                        amount = entity.amount.toDouble(),
+                        description = entity.description,
+                        timestamp = entity.createdAt.time
+                    )
+                }
+            }
     }
 } 

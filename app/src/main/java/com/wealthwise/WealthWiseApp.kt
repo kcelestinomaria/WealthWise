@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
@@ -20,7 +21,10 @@ import androidx.navigation.compose.rememberNavController
 import com.wealthwise.data.model.CareersData
 import com.wealthwise.ui.components.*
 import com.wealthwise.ui.screens.*
+import com.wealthwise.ui.screens.auth.SignInScreen
+import com.wealthwise.ui.screens.auth.SignUpScreen
 import com.wealthwise.viewmodel.WealthWiseViewModel
+import com.wealthwise.viewmodel.AuthViewModel
 
 /**
  * Navigation routes for the app screens
@@ -29,6 +33,8 @@ import com.wealthwise.viewmodel.WealthWiseViewModel
 sealed class Screen(val route: String) {
     object Splash : Screen("splash")           // App loading screen
     object Welcome : Screen("welcome")         // First-time user welcome
+    object SignIn : Screen("sign_in")          // User authentication - sign in
+    object SignUp : Screen("sign_up")          // User authentication - sign up
     object Onboarding : Screen("onboarding")   // Tutorial walkthrough
     object CareerSelection : Screen("career_selection") // Choose career path
     object Dashboard : Screen("dashboard")     // Main game dashboard
@@ -49,14 +55,15 @@ data class BottomNavItem(
 
 /**
  * WealthWiseApp - Main app navigation and layout structure
- * 
+ *
  * This composable manages:
  * - Navigation between all app screens
  * - Bottom navigation bar for main tabs
  * - Global app state and dialogs
  * - ViewModel integration for game state
- * 
- * Flow: Splash → Welcome → Onboarding → Career Selection → Dashboard (with bottom nav)
+ * - Authentication flow and state management
+ *
+ * Flow: SignIn → (SignUp optional) → Welcome/Onboarding → Career Selection → Dashboard (with bottom nav)
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -64,11 +71,21 @@ fun WealthWiseApp() {
     // Navigation and state management
     val navController = rememberNavController()
     val viewModel: WealthWiseViewModel = viewModel()
-    
-    // Observe UI and game state changes
+    val authViewModel: AuthViewModel = hiltViewModel()
+
+    // Observe UI, game state, and auth state changes
     val uiState by viewModel.uiState.collectAsState()
     val gameState by viewModel.gameState.collectAsState()
-    
+    val authUiState by authViewModel.uiState.collectAsState()
+
+    // Determine start destination based on auth state
+    val startDestination = when {
+        !authUiState.isSignedIn -> Screen.SignIn.route
+        authUiState.isAnonymous -> Screen.Welcome.route // Show welcome for anonymous users
+        !uiState.isOnboardingCompleted -> Screen.Onboarding.route // Check onboarding for authenticated users
+        else -> Screen.Dashboard.route
+    }
+
     // Define bottom navigation tabs (only shown on main screens)
     val bottomNavItems = listOf(
         BottomNavItem(
@@ -90,27 +107,27 @@ fun WealthWiseApp() {
             unselectedIcon = Icons.Outlined.Person
         )
     )
-    
+
     // Track current screen for bottom bar visibility
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = currentBackStackEntry?.destination
-    
+
     // Show bottom bar only on main app screens
     val showBottomBar = currentDestination?.route in listOf(
         Screen.Dashboard.route,
         Screen.Goals.route,
         Screen.Profile.route
     )
-    
+
     Scaffold(
         bottomBar = {
             if (showBottomBar) {
                 NavigationBar {
                     bottomNavItems.forEach { item ->
-                        val isSelected = currentDestination?.hierarchy?.any { 
-                            it.route == item.screen.route 
+                        val isSelected = currentDestination?.hierarchy?.any {
+                            it.route == item.screen.route
                         } == true
-                        
+
                         NavigationBarItem(
                             icon = {
                                 Icon(
@@ -143,7 +160,7 @@ fun WealthWiseApp() {
             // Main navigation graph - defines all app screens and their transitions
             NavHost(
                 navController = navController,
-                startDestination = if (uiState.isOnboardingCompleted) Screen.Dashboard.route else Screen.Splash.route
+                startDestination = startDestination
             ) {
                 // App loading screen
                 composable(Screen.Splash.route) {
@@ -153,21 +170,97 @@ fun WealthWiseApp() {
                         }
                     }
                 }
-                
+
                 // First-time user introduction
                 composable(Screen.Welcome.route) {
                     WelcomeScreen {
                         navController.navigate(Screen.Onboarding.route)
                     }
                 }
-                
+
+                // User authentication - sign in
+                composable(Screen.SignIn.route) {
+                    val authViewModel: AuthViewModel = hiltViewModel()
+                    val authUiState by authViewModel.uiState.collectAsState()
+
+                    // Navigate when authentication succeeds
+                    LaunchedEffect(authUiState.isSignedIn) {
+                        if (authUiState.isSignedIn) {
+                            val destination = if (authUiState.isAnonymous) {
+                                Screen.Welcome.route
+                            } else if (!uiState.isOnboardingCompleted) {
+                                Screen.Onboarding.route
+                            } else {
+                                Screen.Dashboard.route
+                            }
+                            navController.navigate(destination) {
+                                popUpTo(Screen.SignIn.route) { inclusive = true }
+                            }
+                        }
+                    }
+
+                    SignInScreen(
+                        onSignInClick = { email, password ->
+                            authViewModel.signInWithEmail(email, password)
+                        },
+                        onSignUpClick = {
+                            navController.navigate(Screen.SignUp.route)
+                        },
+                        onGoogleSignInClick = {
+                            // Handle Google Sign-In (implement launcher)
+                        },
+                        onAnonymousSignInClick = {
+                            authViewModel.signInAnonymously()
+                        },
+                        onForgotPasswordClick = { email ->
+                            authViewModel.resetPassword(email)
+                        },
+                        isLoading = authUiState.isLoading,
+                        errorMessage = authUiState.errorMessage
+                    )
+                }
+
+                // User authentication - sign up
+                composable(Screen.SignUp.route) {
+                    val authViewModel: AuthViewModel = hiltViewModel()
+                    val authUiState by authViewModel.uiState.collectAsState()
+
+                    // Navigate when sign up succeeds
+                    LaunchedEffect(authUiState.isSignedIn) {
+                        if (authUiState.isSignedIn && !authUiState.isAnonymous) {
+                            val destination = if (!uiState.isOnboardingCompleted) {
+                                Screen.Onboarding.route
+                            } else {
+                                Screen.Dashboard.route
+                            }
+                            navController.navigate(destination) {
+                                popUpTo(Screen.SignUp.route) { inclusive = true }
+                            }
+                        }
+                    }
+
+                    SignUpScreen(
+                        onSignUpClick = { email, password, name ->
+                            authViewModel.signUpWithEmail(email, password, name)
+                        },
+                        onSignInClick = {
+                            navController.popBackStack()
+                        },
+                        onBackClick = {
+                            navController.popBackStack()
+                        },
+                        isLoading = authUiState.isLoading,
+                        errorMessage = authUiState.errorMessage
+                    )
+                }
+
                 // Tutorial walkthrough for game mechanics
                 composable(Screen.Onboarding.route) {
                     OnboardingScreen {
                         navController.navigate(Screen.CareerSelection.route)
                     }
                 }
-                
+
                 // Choose career path (affects starting income/expenses)
                 composable(Screen.CareerSelection.route) {
                     CareerSelectionScreen { career ->
@@ -177,7 +270,7 @@ fun WealthWiseApp() {
                         }
                     }
                 }
-                
+
                 // Main game dashboard - shows financial overview and daily actions
                 composable(Screen.Dashboard.route) {
                     DashboardScreen(
@@ -190,7 +283,7 @@ fun WealthWiseApp() {
                         }
                     )
                 }
-                
+
                 // Financial goals management - create, track, and contribute to goals
                 composable(Screen.Goals.route) {
                     GoalsScreen(
@@ -203,14 +296,15 @@ fun WealthWiseApp() {
                         }
                     )
                 }
-                
+
                 // User profile and settings
                 composable(Screen.Profile.route) {
                     ProfileScreen(
                         gameState = gameState,
                         onLogout = {
+                            authViewModel.signOut()  // Sign out user
                             viewModel.resetGame()  // Clear all progress
-                            navController.navigate(Screen.Welcome.route) {
+                            navController.navigate(Screen.SignIn.route) {
                                 popUpTo(Screen.Dashboard.route) { inclusive = true }
                             }
                         },
@@ -232,20 +326,20 @@ fun WealthWiseApp() {
                     )
                 }
             }
-            
+
             // Global dialogs - shown over current screen when triggered
-            
+
             // Monthly bills payment dialog - advances to next day when paid
             if (uiState.showPayBillsDialog) {
                 PayBillsDialog(
                     gameState = gameState,
                     onDismiss = { viewModel.hidePayBillsDialog() },
-                    onConfirm = { 
+                    onConfirm = {
                         viewModel.payBills()  // Deduct expenses, advance day
                     }
                 )
             }
-            
+
             // Investment dialog - allows player to invest money for returns
             if (uiState.showInvestmentDialog) {
                 InvestmentDialog(
@@ -256,7 +350,7 @@ fun WealthWiseApp() {
                     }
                 )
             }
-            
+
             // Loan dialog - allows player to borrow money (with interest)
             if (uiState.showLoanDialog) {
                 LoanDialog(
@@ -267,7 +361,7 @@ fun WealthWiseApp() {
                     }
                 )
             }
-            
+
             // Create new goal dialog - set target amount and category
             if (uiState.showAddGoalDialog) {
                 AddGoalDialog(
@@ -277,34 +371,45 @@ fun WealthWiseApp() {
                     }
                 )
             }
-            
-            // Edit existing goal dialog - contribute money or remove goal
-            if (uiState.showEditGoalDialog && uiState.selectedGoal != null) {
-                EditGoalDialog(
-                    goal = uiState.selectedGoal,
-                    gameState = gameState,
-                    onDismiss = { viewModel.hideEditGoalDialog() },
-                    onContribute = { amount ->
-                        viewModel.updateGoal(uiState.selectedGoal.id, amount)  // Add money to goal
-                    },
-                    onRemove = {
-                        viewModel.removeGoal(uiState.selectedGoal.id)  // Delete goal entirely
-                    }
-                )
+
+// Edit existing goal dialog - contribute money or remove goal
+            uiState.selectedGoal?.let { selectedGoal ->
+                if (uiState.showEditGoalDialog) {
+                    EditGoalDialog(
+                        goal = selectedGoal,
+                        gameState = gameState,
+                        onDismiss = { viewModel.hideEditGoalDialog() },
+                        onContribute = { amount ->
+                            viewModel.updateGoal(selectedGoal.id, amount)  // Add money to goal
+                        },
+                        onRemove = {
+                            viewModel.removeGoal(selectedGoal.id)  // Delete goal entirely
+                        }
+                    )
+                }
             }
-            
-            // Show messages
+
+            // Show success messages
             uiState.successMessage?.let { message ->
                 LaunchedEffect(message) {
                     // TODO: Show success message (could use SnackbarHost)
                     viewModel.clearMessages()
                 }
             }
-            
+
+            // Show error messages
             uiState.errorMessage?.let { message ->
                 LaunchedEffect(message) {
-                    // TODO: Show error message (could use SnackbarHost)  
+                    // TODO: Show error message (could use SnackbarHost)
                     viewModel.clearMessages()
+                }
+            }
+
+            // Show auth error messages
+            authUiState.errorMessage?.let { message ->
+                LaunchedEffect(message) {
+                    // TODO: Show auth error message (could use SnackbarHost)
+                    authViewModel.clearError()
                 }
             }
         }

@@ -1,47 +1,56 @@
 package com.wealthwise.data.dao;
 
+import android.database.Cursor;
 import androidx.annotation.NonNull;
-import androidx.room.EntityDeleteOrUpdateAdapter;
-import androidx.room.EntityInsertAdapter;
+import androidx.annotation.Nullable;
+import androidx.room.CoroutinesRoom;
+import androidx.room.EntityDeletionOrUpdateAdapter;
+import androidx.room.EntityInsertionAdapter;
 import androidx.room.RoomDatabase;
-import androidx.room.coroutines.FlowUtil;
+import androidx.room.RoomSQLiteQuery;
+import androidx.room.SharedSQLiteStatement;
+import androidx.room.util.CursorUtil;
 import androidx.room.util.DBUtil;
-import androidx.room.util.SQLiteStatementUtil;
-import androidx.sqlite.SQLiteStatement;
+import androidx.sqlite.db.SupportSQLiteStatement;
 import com.wealthwise.data.database.Converters;
 import com.wealthwise.data.model.Player;
 import com.wealthwise.data.model.Role;
 import java.lang.Class;
+import java.lang.Exception;
 import java.lang.Long;
-import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.lang.SuppressWarnings;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Callable;
 import javax.annotation.processing.Generated;
 import kotlin.Unit;
 import kotlin.coroutines.Continuation;
 import kotlinx.coroutines.flow.Flow;
 
 @Generated("androidx.room.RoomProcessor")
-@SuppressWarnings({"unchecked", "deprecation", "removal"})
+@SuppressWarnings({"unchecked", "deprecation"})
 public final class PlayerDao_Impl implements PlayerDao {
   private final RoomDatabase __db;
 
-  private final EntityInsertAdapter<Player> __insertAdapterOfPlayer;
+  private final EntityInsertionAdapter<Player> __insertionAdapterOfPlayer;
 
-  private final Converters __converters = new Converters();
+  private Converters __converters;
 
-  private final EntityDeleteOrUpdateAdapter<Player> __deleteAdapterOfPlayer;
+  private final EntityDeletionOrUpdateAdapter<Player> __deletionAdapterOfPlayer;
 
-  private final EntityDeleteOrUpdateAdapter<Player> __updateAdapterOfPlayer;
+  private final EntityDeletionOrUpdateAdapter<Player> __updateAdapterOfPlayer;
+
+  private final SharedSQLiteStatement __preparedStmtOfDeletePlayerById;
+
+  private final SharedSQLiteStatement __preparedStmtOfDeleteAllPlayers;
 
   public PlayerDao_Impl(@NonNull final RoomDatabase __db) {
     this.__db = __db;
-    this.__insertAdapterOfPlayer = new EntityInsertAdapter<Player>() {
+    this.__insertionAdapterOfPlayer = new EntityInsertionAdapter<Player>(__db) {
       @Override
       @NonNull
       protected String createQuery() {
@@ -49,18 +58,19 @@ public final class PlayerDao_Impl implements PlayerDao {
       }
 
       @Override
-      protected void bind(@NonNull final SQLiteStatement statement, @NonNull final Player entity) {
+      protected void bind(@NonNull final SupportSQLiteStatement statement,
+          @NonNull final Player entity) {
         statement.bindLong(1, entity.getId());
         if (entity.getName() == null) {
           statement.bindNull(2);
         } else {
-          statement.bindText(2, entity.getName());
+          statement.bindString(2, entity.getName());
         }
-        final String _tmp = __converters.fromRole(entity.getRole());
+        final String _tmp = __converters().fromRole(entity.getRole());
         if (_tmp == null) {
           statement.bindNull(3);
         } else {
-          statement.bindText(3, _tmp);
+          statement.bindString(3, _tmp);
         }
         statement.bindDouble(4, entity.getCash());
         statement.bindDouble(5, entity.getSacco());
@@ -74,7 +84,7 @@ public final class PlayerDao_Impl implements PlayerDao {
         statement.bindLong(12, entity.getCreatedAt());
       }
     };
-    this.__deleteAdapterOfPlayer = new EntityDeleteOrUpdateAdapter<Player>() {
+    this.__deletionAdapterOfPlayer = new EntityDeletionOrUpdateAdapter<Player>(__db) {
       @Override
       @NonNull
       protected String createQuery() {
@@ -82,11 +92,12 @@ public final class PlayerDao_Impl implements PlayerDao {
       }
 
       @Override
-      protected void bind(@NonNull final SQLiteStatement statement, @NonNull final Player entity) {
+      protected void bind(@NonNull final SupportSQLiteStatement statement,
+          @NonNull final Player entity) {
         statement.bindLong(1, entity.getId());
       }
     };
-    this.__updateAdapterOfPlayer = new EntityDeleteOrUpdateAdapter<Player>() {
+    this.__updateAdapterOfPlayer = new EntityDeletionOrUpdateAdapter<Player>(__db) {
       @Override
       @NonNull
       protected String createQuery() {
@@ -94,18 +105,19 @@ public final class PlayerDao_Impl implements PlayerDao {
       }
 
       @Override
-      protected void bind(@NonNull final SQLiteStatement statement, @NonNull final Player entity) {
+      protected void bind(@NonNull final SupportSQLiteStatement statement,
+          @NonNull final Player entity) {
         statement.bindLong(1, entity.getId());
         if (entity.getName() == null) {
           statement.bindNull(2);
         } else {
-          statement.bindText(2, entity.getName());
+          statement.bindString(2, entity.getName());
         }
-        final String _tmp = __converters.fromRole(entity.getRole());
+        final String _tmp = __converters().fromRole(entity.getRole());
         if (_tmp == null) {
           statement.bindNull(3);
         } else {
-          statement.bindText(3, _tmp);
+          statement.bindString(3, _tmp);
         }
         statement.bindDouble(4, entity.getCash());
         statement.bindDouble(5, entity.getSacco());
@@ -120,97 +132,200 @@ public final class PlayerDao_Impl implements PlayerDao {
         statement.bindLong(13, entity.getId());
       }
     };
+    this.__preparedStmtOfDeletePlayerById = new SharedSQLiteStatement(__db) {
+      @Override
+      @NonNull
+      public String createQuery() {
+        final String _query = "DELETE FROM players WHERE id = ?";
+        return _query;
+      }
+    };
+    this.__preparedStmtOfDeleteAllPlayers = new SharedSQLiteStatement(__db) {
+      @Override
+      @NonNull
+      public String createQuery() {
+        final String _query = "DELETE FROM players";
+        return _query;
+      }
+    };
   }
 
   @Override
   public Object insertPlayer(final Player player, final Continuation<? super Long> $completion) {
-    if (player == null) throw new NullPointerException();
-    return DBUtil.performSuspending(__db, false, true, (_connection) -> {
-      return __insertAdapterOfPlayer.insertAndReturnId(_connection, player);
+    return CoroutinesRoom.execute(__db, true, new Callable<Long>() {
+      @Override
+      @NonNull
+      public Long call() throws Exception {
+        __db.beginTransaction();
+        try {
+          final Long _result = __insertionAdapterOfPlayer.insertAndReturnId(player);
+          __db.setTransactionSuccessful();
+          return _result;
+        } finally {
+          __db.endTransaction();
+        }
+      }
     }, $completion);
   }
 
   @Override
   public Object deletePlayer(final Player player, final Continuation<? super Unit> $completion) {
-    if (player == null) throw new NullPointerException();
-    return DBUtil.performSuspending(__db, false, true, (_connection) -> {
-      __deleteAdapterOfPlayer.handle(_connection, player);
-      return Unit.INSTANCE;
+    return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
+      @Override
+      @NonNull
+      public Unit call() throws Exception {
+        __db.beginTransaction();
+        try {
+          __deletionAdapterOfPlayer.handle(player);
+          __db.setTransactionSuccessful();
+          return Unit.INSTANCE;
+        } finally {
+          __db.endTransaction();
+        }
+      }
     }, $completion);
   }
 
   @Override
   public Object updatePlayer(final Player player, final Continuation<? super Unit> $completion) {
-    if (player == null) throw new NullPointerException();
-    return DBUtil.performSuspending(__db, false, true, (_connection) -> {
-      __updateAdapterOfPlayer.handle(_connection, player);
-      return Unit.INSTANCE;
+    return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
+      @Override
+      @NonNull
+      public Unit call() throws Exception {
+        __db.beginTransaction();
+        try {
+          __updateAdapterOfPlayer.handle(player);
+          __db.setTransactionSuccessful();
+          return Unit.INSTANCE;
+        } finally {
+          __db.endTransaction();
+        }
+      }
+    }, $completion);
+  }
+
+  @Override
+  public Object deletePlayerById(final long playerId,
+      final Continuation<? super Unit> $completion) {
+    return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
+      @Override
+      @NonNull
+      public Unit call() throws Exception {
+        final SupportSQLiteStatement _stmt = __preparedStmtOfDeletePlayerById.acquire();
+        int _argIndex = 1;
+        _stmt.bindLong(_argIndex, playerId);
+        try {
+          __db.beginTransaction();
+          try {
+            _stmt.executeUpdateDelete();
+            __db.setTransactionSuccessful();
+            return Unit.INSTANCE;
+          } finally {
+            __db.endTransaction();
+          }
+        } finally {
+          __preparedStmtOfDeletePlayerById.release(_stmt);
+        }
+      }
+    }, $completion);
+  }
+
+  @Override
+  public Object deleteAllPlayers(final Continuation<? super Unit> $completion) {
+    return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
+      @Override
+      @NonNull
+      public Unit call() throws Exception {
+        final SupportSQLiteStatement _stmt = __preparedStmtOfDeleteAllPlayers.acquire();
+        try {
+          __db.beginTransaction();
+          try {
+            _stmt.executeUpdateDelete();
+            __db.setTransactionSuccessful();
+            return Unit.INSTANCE;
+          } finally {
+            __db.endTransaction();
+          }
+        } finally {
+          __preparedStmtOfDeleteAllPlayers.release(_stmt);
+        }
+      }
     }, $completion);
   }
 
   @Override
   public Flow<List<Player>> getAllPlayers() {
     final String _sql = "SELECT * FROM players ORDER BY createdAt DESC";
-    return FlowUtil.createFlow(__db, false, new String[] {"players"}, (_connection) -> {
-      final SQLiteStatement _stmt = _connection.prepare(_sql);
-      try {
-        final int _columnIndexOfId = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "id");
-        final int _columnIndexOfName = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "name");
-        final int _columnIndexOfRole = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "role");
-        final int _columnIndexOfCash = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "cash");
-        final int _columnIndexOfSacco = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "sacco");
-        final int _columnIndexOfMmf = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "mmf");
-        final int _columnIndexOfLand = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "land");
-        final int _columnIndexOfReits = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "reits");
-        final int _columnIndexOfDebt = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "debt");
-        final int _columnIndexOfCurrentDay = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "currentDay");
-        final int _columnIndexOfGameCompleted = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "gameCompleted");
-        final int _columnIndexOfCreatedAt = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "createdAt");
-        final List<Player> _result = new ArrayList<Player>();
-        while (_stmt.step()) {
-          final Player _item;
-          final long _tmpId;
-          _tmpId = _stmt.getLong(_columnIndexOfId);
-          final String _tmpName;
-          if (_stmt.isNull(_columnIndexOfName)) {
-            _tmpName = null;
-          } else {
-            _tmpName = _stmt.getText(_columnIndexOfName);
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 0);
+    return CoroutinesRoom.createFlow(__db, false, new String[] {"players"}, new Callable<List<Player>>() {
+      @Override
+      @NonNull
+      public List<Player> call() throws Exception {
+        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+        try {
+          final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
+          final int _cursorIndexOfName = CursorUtil.getColumnIndexOrThrow(_cursor, "name");
+          final int _cursorIndexOfRole = CursorUtil.getColumnIndexOrThrow(_cursor, "role");
+          final int _cursorIndexOfCash = CursorUtil.getColumnIndexOrThrow(_cursor, "cash");
+          final int _cursorIndexOfSacco = CursorUtil.getColumnIndexOrThrow(_cursor, "sacco");
+          final int _cursorIndexOfMmf = CursorUtil.getColumnIndexOrThrow(_cursor, "mmf");
+          final int _cursorIndexOfLand = CursorUtil.getColumnIndexOrThrow(_cursor, "land");
+          final int _cursorIndexOfReits = CursorUtil.getColumnIndexOrThrow(_cursor, "reits");
+          final int _cursorIndexOfDebt = CursorUtil.getColumnIndexOrThrow(_cursor, "debt");
+          final int _cursorIndexOfCurrentDay = CursorUtil.getColumnIndexOrThrow(_cursor, "currentDay");
+          final int _cursorIndexOfGameCompleted = CursorUtil.getColumnIndexOrThrow(_cursor, "gameCompleted");
+          final int _cursorIndexOfCreatedAt = CursorUtil.getColumnIndexOrThrow(_cursor, "createdAt");
+          final List<Player> _result = new ArrayList<Player>(_cursor.getCount());
+          while (_cursor.moveToNext()) {
+            final Player _item;
+            final long _tmpId;
+            _tmpId = _cursor.getLong(_cursorIndexOfId);
+            final String _tmpName;
+            if (_cursor.isNull(_cursorIndexOfName)) {
+              _tmpName = null;
+            } else {
+              _tmpName = _cursor.getString(_cursorIndexOfName);
+            }
+            final Role _tmpRole;
+            final String _tmp;
+            if (_cursor.isNull(_cursorIndexOfRole)) {
+              _tmp = null;
+            } else {
+              _tmp = _cursor.getString(_cursorIndexOfRole);
+            }
+            _tmpRole = __converters().toRole(_tmp);
+            final double _tmpCash;
+            _tmpCash = _cursor.getDouble(_cursorIndexOfCash);
+            final double _tmpSacco;
+            _tmpSacco = _cursor.getDouble(_cursorIndexOfSacco);
+            final double _tmpMmf;
+            _tmpMmf = _cursor.getDouble(_cursorIndexOfMmf);
+            final double _tmpLand;
+            _tmpLand = _cursor.getDouble(_cursorIndexOfLand);
+            final double _tmpReits;
+            _tmpReits = _cursor.getDouble(_cursorIndexOfReits);
+            final double _tmpDebt;
+            _tmpDebt = _cursor.getDouble(_cursorIndexOfDebt);
+            final int _tmpCurrentDay;
+            _tmpCurrentDay = _cursor.getInt(_cursorIndexOfCurrentDay);
+            final boolean _tmpGameCompleted;
+            final int _tmp_1;
+            _tmp_1 = _cursor.getInt(_cursorIndexOfGameCompleted);
+            _tmpGameCompleted = _tmp_1 != 0;
+            final long _tmpCreatedAt;
+            _tmpCreatedAt = _cursor.getLong(_cursorIndexOfCreatedAt);
+            _item = new Player(_tmpId,_tmpName,_tmpRole,_tmpCash,_tmpSacco,_tmpMmf,_tmpLand,_tmpReits,_tmpDebt,_tmpCurrentDay,_tmpGameCompleted,_tmpCreatedAt);
+            _result.add(_item);
           }
-          final Role _tmpRole;
-          final String _tmp;
-          if (_stmt.isNull(_columnIndexOfRole)) {
-            _tmp = null;
-          } else {
-            _tmp = _stmt.getText(_columnIndexOfRole);
-          }
-          _tmpRole = __converters.toRole(_tmp);
-          final double _tmpCash;
-          _tmpCash = _stmt.getDouble(_columnIndexOfCash);
-          final double _tmpSacco;
-          _tmpSacco = _stmt.getDouble(_columnIndexOfSacco);
-          final double _tmpMmf;
-          _tmpMmf = _stmt.getDouble(_columnIndexOfMmf);
-          final double _tmpLand;
-          _tmpLand = _stmt.getDouble(_columnIndexOfLand);
-          final double _tmpReits;
-          _tmpReits = _stmt.getDouble(_columnIndexOfReits);
-          final double _tmpDebt;
-          _tmpDebt = _stmt.getDouble(_columnIndexOfDebt);
-          final int _tmpCurrentDay;
-          _tmpCurrentDay = (int) (_stmt.getLong(_columnIndexOfCurrentDay));
-          final boolean _tmpGameCompleted;
-          final int _tmp_1;
-          _tmp_1 = (int) (_stmt.getLong(_columnIndexOfGameCompleted));
-          _tmpGameCompleted = _tmp_1 != 0;
-          final long _tmpCreatedAt;
-          _tmpCreatedAt = _stmt.getLong(_columnIndexOfCreatedAt);
-          _item = new Player(_tmpId,_tmpName,_tmpRole,_tmpCash,_tmpSacco,_tmpMmf,_tmpLand,_tmpReits,_tmpDebt,_tmpCurrentDay,_tmpGameCompleted,_tmpCreatedAt);
-          _result.add(_item);
+          return _result;
+        } finally {
+          _cursor.close();
         }
-        return _result;
-      } finally {
-        _stmt.close();
+      }
+
+      @Override
+      protected void finalize() {
+        _statement.release();
       }
     });
   }
@@ -218,68 +333,78 @@ public final class PlayerDao_Impl implements PlayerDao {
   @Override
   public Flow<Player> getPlayerById(final long playerId) {
     final String _sql = "SELECT * FROM players WHERE id = ?";
-    return FlowUtil.createFlow(__db, false, new String[] {"players"}, (_connection) -> {
-      final SQLiteStatement _stmt = _connection.prepare(_sql);
-      try {
-        int _argIndex = 1;
-        _stmt.bindLong(_argIndex, playerId);
-        final int _columnIndexOfId = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "id");
-        final int _columnIndexOfName = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "name");
-        final int _columnIndexOfRole = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "role");
-        final int _columnIndexOfCash = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "cash");
-        final int _columnIndexOfSacco = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "sacco");
-        final int _columnIndexOfMmf = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "mmf");
-        final int _columnIndexOfLand = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "land");
-        final int _columnIndexOfReits = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "reits");
-        final int _columnIndexOfDebt = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "debt");
-        final int _columnIndexOfCurrentDay = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "currentDay");
-        final int _columnIndexOfGameCompleted = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "gameCompleted");
-        final int _columnIndexOfCreatedAt = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "createdAt");
-        final Player _result;
-        if (_stmt.step()) {
-          final long _tmpId;
-          _tmpId = _stmt.getLong(_columnIndexOfId);
-          final String _tmpName;
-          if (_stmt.isNull(_columnIndexOfName)) {
-            _tmpName = null;
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
+    int _argIndex = 1;
+    _statement.bindLong(_argIndex, playerId);
+    return CoroutinesRoom.createFlow(__db, false, new String[] {"players"}, new Callable<Player>() {
+      @Override
+      @Nullable
+      public Player call() throws Exception {
+        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+        try {
+          final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
+          final int _cursorIndexOfName = CursorUtil.getColumnIndexOrThrow(_cursor, "name");
+          final int _cursorIndexOfRole = CursorUtil.getColumnIndexOrThrow(_cursor, "role");
+          final int _cursorIndexOfCash = CursorUtil.getColumnIndexOrThrow(_cursor, "cash");
+          final int _cursorIndexOfSacco = CursorUtil.getColumnIndexOrThrow(_cursor, "sacco");
+          final int _cursorIndexOfMmf = CursorUtil.getColumnIndexOrThrow(_cursor, "mmf");
+          final int _cursorIndexOfLand = CursorUtil.getColumnIndexOrThrow(_cursor, "land");
+          final int _cursorIndexOfReits = CursorUtil.getColumnIndexOrThrow(_cursor, "reits");
+          final int _cursorIndexOfDebt = CursorUtil.getColumnIndexOrThrow(_cursor, "debt");
+          final int _cursorIndexOfCurrentDay = CursorUtil.getColumnIndexOrThrow(_cursor, "currentDay");
+          final int _cursorIndexOfGameCompleted = CursorUtil.getColumnIndexOrThrow(_cursor, "gameCompleted");
+          final int _cursorIndexOfCreatedAt = CursorUtil.getColumnIndexOrThrow(_cursor, "createdAt");
+          final Player _result;
+          if (_cursor.moveToFirst()) {
+            final long _tmpId;
+            _tmpId = _cursor.getLong(_cursorIndexOfId);
+            final String _tmpName;
+            if (_cursor.isNull(_cursorIndexOfName)) {
+              _tmpName = null;
+            } else {
+              _tmpName = _cursor.getString(_cursorIndexOfName);
+            }
+            final Role _tmpRole;
+            final String _tmp;
+            if (_cursor.isNull(_cursorIndexOfRole)) {
+              _tmp = null;
+            } else {
+              _tmp = _cursor.getString(_cursorIndexOfRole);
+            }
+            _tmpRole = __converters().toRole(_tmp);
+            final double _tmpCash;
+            _tmpCash = _cursor.getDouble(_cursorIndexOfCash);
+            final double _tmpSacco;
+            _tmpSacco = _cursor.getDouble(_cursorIndexOfSacco);
+            final double _tmpMmf;
+            _tmpMmf = _cursor.getDouble(_cursorIndexOfMmf);
+            final double _tmpLand;
+            _tmpLand = _cursor.getDouble(_cursorIndexOfLand);
+            final double _tmpReits;
+            _tmpReits = _cursor.getDouble(_cursorIndexOfReits);
+            final double _tmpDebt;
+            _tmpDebt = _cursor.getDouble(_cursorIndexOfDebt);
+            final int _tmpCurrentDay;
+            _tmpCurrentDay = _cursor.getInt(_cursorIndexOfCurrentDay);
+            final boolean _tmpGameCompleted;
+            final int _tmp_1;
+            _tmp_1 = _cursor.getInt(_cursorIndexOfGameCompleted);
+            _tmpGameCompleted = _tmp_1 != 0;
+            final long _tmpCreatedAt;
+            _tmpCreatedAt = _cursor.getLong(_cursorIndexOfCreatedAt);
+            _result = new Player(_tmpId,_tmpName,_tmpRole,_tmpCash,_tmpSacco,_tmpMmf,_tmpLand,_tmpReits,_tmpDebt,_tmpCurrentDay,_tmpGameCompleted,_tmpCreatedAt);
           } else {
-            _tmpName = _stmt.getText(_columnIndexOfName);
+            _result = null;
           }
-          final Role _tmpRole;
-          final String _tmp;
-          if (_stmt.isNull(_columnIndexOfRole)) {
-            _tmp = null;
-          } else {
-            _tmp = _stmt.getText(_columnIndexOfRole);
-          }
-          _tmpRole = __converters.toRole(_tmp);
-          final double _tmpCash;
-          _tmpCash = _stmt.getDouble(_columnIndexOfCash);
-          final double _tmpSacco;
-          _tmpSacco = _stmt.getDouble(_columnIndexOfSacco);
-          final double _tmpMmf;
-          _tmpMmf = _stmt.getDouble(_columnIndexOfMmf);
-          final double _tmpLand;
-          _tmpLand = _stmt.getDouble(_columnIndexOfLand);
-          final double _tmpReits;
-          _tmpReits = _stmt.getDouble(_columnIndexOfReits);
-          final double _tmpDebt;
-          _tmpDebt = _stmt.getDouble(_columnIndexOfDebt);
-          final int _tmpCurrentDay;
-          _tmpCurrentDay = (int) (_stmt.getLong(_columnIndexOfCurrentDay));
-          final boolean _tmpGameCompleted;
-          final int _tmp_1;
-          _tmp_1 = (int) (_stmt.getLong(_columnIndexOfGameCompleted));
-          _tmpGameCompleted = _tmp_1 != 0;
-          final long _tmpCreatedAt;
-          _tmpCreatedAt = _stmt.getLong(_columnIndexOfCreatedAt);
-          _result = new Player(_tmpId,_tmpName,_tmpRole,_tmpCash,_tmpSacco,_tmpMmf,_tmpLand,_tmpReits,_tmpDebt,_tmpCurrentDay,_tmpGameCompleted,_tmpCreatedAt);
-        } else {
-          _result = null;
+          return _result;
+        } finally {
+          _cursor.close();
         }
-        return _result;
-      } finally {
-        _stmt.close();
+      }
+
+      @Override
+      protected void finalize() {
+        _statement.release();
       }
     });
   }
@@ -287,66 +412,76 @@ public final class PlayerDao_Impl implements PlayerDao {
   @Override
   public Flow<Player> getCurrentPlayer() {
     final String _sql = "SELECT * FROM players WHERE gameCompleted = 0 ORDER BY createdAt DESC LIMIT 1";
-    return FlowUtil.createFlow(__db, false, new String[] {"players"}, (_connection) -> {
-      final SQLiteStatement _stmt = _connection.prepare(_sql);
-      try {
-        final int _columnIndexOfId = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "id");
-        final int _columnIndexOfName = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "name");
-        final int _columnIndexOfRole = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "role");
-        final int _columnIndexOfCash = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "cash");
-        final int _columnIndexOfSacco = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "sacco");
-        final int _columnIndexOfMmf = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "mmf");
-        final int _columnIndexOfLand = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "land");
-        final int _columnIndexOfReits = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "reits");
-        final int _columnIndexOfDebt = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "debt");
-        final int _columnIndexOfCurrentDay = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "currentDay");
-        final int _columnIndexOfGameCompleted = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "gameCompleted");
-        final int _columnIndexOfCreatedAt = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "createdAt");
-        final Player _result;
-        if (_stmt.step()) {
-          final long _tmpId;
-          _tmpId = _stmt.getLong(_columnIndexOfId);
-          final String _tmpName;
-          if (_stmt.isNull(_columnIndexOfName)) {
-            _tmpName = null;
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 0);
+    return CoroutinesRoom.createFlow(__db, false, new String[] {"players"}, new Callable<Player>() {
+      @Override
+      @Nullable
+      public Player call() throws Exception {
+        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+        try {
+          final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
+          final int _cursorIndexOfName = CursorUtil.getColumnIndexOrThrow(_cursor, "name");
+          final int _cursorIndexOfRole = CursorUtil.getColumnIndexOrThrow(_cursor, "role");
+          final int _cursorIndexOfCash = CursorUtil.getColumnIndexOrThrow(_cursor, "cash");
+          final int _cursorIndexOfSacco = CursorUtil.getColumnIndexOrThrow(_cursor, "sacco");
+          final int _cursorIndexOfMmf = CursorUtil.getColumnIndexOrThrow(_cursor, "mmf");
+          final int _cursorIndexOfLand = CursorUtil.getColumnIndexOrThrow(_cursor, "land");
+          final int _cursorIndexOfReits = CursorUtil.getColumnIndexOrThrow(_cursor, "reits");
+          final int _cursorIndexOfDebt = CursorUtil.getColumnIndexOrThrow(_cursor, "debt");
+          final int _cursorIndexOfCurrentDay = CursorUtil.getColumnIndexOrThrow(_cursor, "currentDay");
+          final int _cursorIndexOfGameCompleted = CursorUtil.getColumnIndexOrThrow(_cursor, "gameCompleted");
+          final int _cursorIndexOfCreatedAt = CursorUtil.getColumnIndexOrThrow(_cursor, "createdAt");
+          final Player _result;
+          if (_cursor.moveToFirst()) {
+            final long _tmpId;
+            _tmpId = _cursor.getLong(_cursorIndexOfId);
+            final String _tmpName;
+            if (_cursor.isNull(_cursorIndexOfName)) {
+              _tmpName = null;
+            } else {
+              _tmpName = _cursor.getString(_cursorIndexOfName);
+            }
+            final Role _tmpRole;
+            final String _tmp;
+            if (_cursor.isNull(_cursorIndexOfRole)) {
+              _tmp = null;
+            } else {
+              _tmp = _cursor.getString(_cursorIndexOfRole);
+            }
+            _tmpRole = __converters().toRole(_tmp);
+            final double _tmpCash;
+            _tmpCash = _cursor.getDouble(_cursorIndexOfCash);
+            final double _tmpSacco;
+            _tmpSacco = _cursor.getDouble(_cursorIndexOfSacco);
+            final double _tmpMmf;
+            _tmpMmf = _cursor.getDouble(_cursorIndexOfMmf);
+            final double _tmpLand;
+            _tmpLand = _cursor.getDouble(_cursorIndexOfLand);
+            final double _tmpReits;
+            _tmpReits = _cursor.getDouble(_cursorIndexOfReits);
+            final double _tmpDebt;
+            _tmpDebt = _cursor.getDouble(_cursorIndexOfDebt);
+            final int _tmpCurrentDay;
+            _tmpCurrentDay = _cursor.getInt(_cursorIndexOfCurrentDay);
+            final boolean _tmpGameCompleted;
+            final int _tmp_1;
+            _tmp_1 = _cursor.getInt(_cursorIndexOfGameCompleted);
+            _tmpGameCompleted = _tmp_1 != 0;
+            final long _tmpCreatedAt;
+            _tmpCreatedAt = _cursor.getLong(_cursorIndexOfCreatedAt);
+            _result = new Player(_tmpId,_tmpName,_tmpRole,_tmpCash,_tmpSacco,_tmpMmf,_tmpLand,_tmpReits,_tmpDebt,_tmpCurrentDay,_tmpGameCompleted,_tmpCreatedAt);
           } else {
-            _tmpName = _stmt.getText(_columnIndexOfName);
+            _result = null;
           }
-          final Role _tmpRole;
-          final String _tmp;
-          if (_stmt.isNull(_columnIndexOfRole)) {
-            _tmp = null;
-          } else {
-            _tmp = _stmt.getText(_columnIndexOfRole);
-          }
-          _tmpRole = __converters.toRole(_tmp);
-          final double _tmpCash;
-          _tmpCash = _stmt.getDouble(_columnIndexOfCash);
-          final double _tmpSacco;
-          _tmpSacco = _stmt.getDouble(_columnIndexOfSacco);
-          final double _tmpMmf;
-          _tmpMmf = _stmt.getDouble(_columnIndexOfMmf);
-          final double _tmpLand;
-          _tmpLand = _stmt.getDouble(_columnIndexOfLand);
-          final double _tmpReits;
-          _tmpReits = _stmt.getDouble(_columnIndexOfReits);
-          final double _tmpDebt;
-          _tmpDebt = _stmt.getDouble(_columnIndexOfDebt);
-          final int _tmpCurrentDay;
-          _tmpCurrentDay = (int) (_stmt.getLong(_columnIndexOfCurrentDay));
-          final boolean _tmpGameCompleted;
-          final int _tmp_1;
-          _tmp_1 = (int) (_stmt.getLong(_columnIndexOfGameCompleted));
-          _tmpGameCompleted = _tmp_1 != 0;
-          final long _tmpCreatedAt;
-          _tmpCreatedAt = _stmt.getLong(_columnIndexOfCreatedAt);
-          _result = new Player(_tmpId,_tmpName,_tmpRole,_tmpCash,_tmpSacco,_tmpMmf,_tmpLand,_tmpReits,_tmpDebt,_tmpCurrentDay,_tmpGameCompleted,_tmpCreatedAt);
-        } else {
-          _result = null;
+          return _result;
+        } finally {
+          _cursor.close();
         }
-        return _result;
-      } finally {
-        _stmt.close();
+      }
+
+      @Override
+      protected void finalize() {
+        _statement.release();
       }
     });
   }
@@ -354,103 +489,89 @@ public final class PlayerDao_Impl implements PlayerDao {
   @Override
   public Flow<List<Player>> getCompletedPlayers() {
     final String _sql = "SELECT * FROM players WHERE gameCompleted = 1 ORDER BY createdAt DESC";
-    return FlowUtil.createFlow(__db, false, new String[] {"players"}, (_connection) -> {
-      final SQLiteStatement _stmt = _connection.prepare(_sql);
-      try {
-        final int _columnIndexOfId = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "id");
-        final int _columnIndexOfName = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "name");
-        final int _columnIndexOfRole = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "role");
-        final int _columnIndexOfCash = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "cash");
-        final int _columnIndexOfSacco = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "sacco");
-        final int _columnIndexOfMmf = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "mmf");
-        final int _columnIndexOfLand = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "land");
-        final int _columnIndexOfReits = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "reits");
-        final int _columnIndexOfDebt = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "debt");
-        final int _columnIndexOfCurrentDay = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "currentDay");
-        final int _columnIndexOfGameCompleted = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "gameCompleted");
-        final int _columnIndexOfCreatedAt = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "createdAt");
-        final List<Player> _result = new ArrayList<Player>();
-        while (_stmt.step()) {
-          final Player _item;
-          final long _tmpId;
-          _tmpId = _stmt.getLong(_columnIndexOfId);
-          final String _tmpName;
-          if (_stmt.isNull(_columnIndexOfName)) {
-            _tmpName = null;
-          } else {
-            _tmpName = _stmt.getText(_columnIndexOfName);
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 0);
+    return CoroutinesRoom.createFlow(__db, false, new String[] {"players"}, new Callable<List<Player>>() {
+      @Override
+      @NonNull
+      public List<Player> call() throws Exception {
+        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+        try {
+          final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
+          final int _cursorIndexOfName = CursorUtil.getColumnIndexOrThrow(_cursor, "name");
+          final int _cursorIndexOfRole = CursorUtil.getColumnIndexOrThrow(_cursor, "role");
+          final int _cursorIndexOfCash = CursorUtil.getColumnIndexOrThrow(_cursor, "cash");
+          final int _cursorIndexOfSacco = CursorUtil.getColumnIndexOrThrow(_cursor, "sacco");
+          final int _cursorIndexOfMmf = CursorUtil.getColumnIndexOrThrow(_cursor, "mmf");
+          final int _cursorIndexOfLand = CursorUtil.getColumnIndexOrThrow(_cursor, "land");
+          final int _cursorIndexOfReits = CursorUtil.getColumnIndexOrThrow(_cursor, "reits");
+          final int _cursorIndexOfDebt = CursorUtil.getColumnIndexOrThrow(_cursor, "debt");
+          final int _cursorIndexOfCurrentDay = CursorUtil.getColumnIndexOrThrow(_cursor, "currentDay");
+          final int _cursorIndexOfGameCompleted = CursorUtil.getColumnIndexOrThrow(_cursor, "gameCompleted");
+          final int _cursorIndexOfCreatedAt = CursorUtil.getColumnIndexOrThrow(_cursor, "createdAt");
+          final List<Player> _result = new ArrayList<Player>(_cursor.getCount());
+          while (_cursor.moveToNext()) {
+            final Player _item;
+            final long _tmpId;
+            _tmpId = _cursor.getLong(_cursorIndexOfId);
+            final String _tmpName;
+            if (_cursor.isNull(_cursorIndexOfName)) {
+              _tmpName = null;
+            } else {
+              _tmpName = _cursor.getString(_cursorIndexOfName);
+            }
+            final Role _tmpRole;
+            final String _tmp;
+            if (_cursor.isNull(_cursorIndexOfRole)) {
+              _tmp = null;
+            } else {
+              _tmp = _cursor.getString(_cursorIndexOfRole);
+            }
+            _tmpRole = __converters().toRole(_tmp);
+            final double _tmpCash;
+            _tmpCash = _cursor.getDouble(_cursorIndexOfCash);
+            final double _tmpSacco;
+            _tmpSacco = _cursor.getDouble(_cursorIndexOfSacco);
+            final double _tmpMmf;
+            _tmpMmf = _cursor.getDouble(_cursorIndexOfMmf);
+            final double _tmpLand;
+            _tmpLand = _cursor.getDouble(_cursorIndexOfLand);
+            final double _tmpReits;
+            _tmpReits = _cursor.getDouble(_cursorIndexOfReits);
+            final double _tmpDebt;
+            _tmpDebt = _cursor.getDouble(_cursorIndexOfDebt);
+            final int _tmpCurrentDay;
+            _tmpCurrentDay = _cursor.getInt(_cursorIndexOfCurrentDay);
+            final boolean _tmpGameCompleted;
+            final int _tmp_1;
+            _tmp_1 = _cursor.getInt(_cursorIndexOfGameCompleted);
+            _tmpGameCompleted = _tmp_1 != 0;
+            final long _tmpCreatedAt;
+            _tmpCreatedAt = _cursor.getLong(_cursorIndexOfCreatedAt);
+            _item = new Player(_tmpId,_tmpName,_tmpRole,_tmpCash,_tmpSacco,_tmpMmf,_tmpLand,_tmpReits,_tmpDebt,_tmpCurrentDay,_tmpGameCompleted,_tmpCreatedAt);
+            _result.add(_item);
           }
-          final Role _tmpRole;
-          final String _tmp;
-          if (_stmt.isNull(_columnIndexOfRole)) {
-            _tmp = null;
-          } else {
-            _tmp = _stmt.getText(_columnIndexOfRole);
-          }
-          _tmpRole = __converters.toRole(_tmp);
-          final double _tmpCash;
-          _tmpCash = _stmt.getDouble(_columnIndexOfCash);
-          final double _tmpSacco;
-          _tmpSacco = _stmt.getDouble(_columnIndexOfSacco);
-          final double _tmpMmf;
-          _tmpMmf = _stmt.getDouble(_columnIndexOfMmf);
-          final double _tmpLand;
-          _tmpLand = _stmt.getDouble(_columnIndexOfLand);
-          final double _tmpReits;
-          _tmpReits = _stmt.getDouble(_columnIndexOfReits);
-          final double _tmpDebt;
-          _tmpDebt = _stmt.getDouble(_columnIndexOfDebt);
-          final int _tmpCurrentDay;
-          _tmpCurrentDay = (int) (_stmt.getLong(_columnIndexOfCurrentDay));
-          final boolean _tmpGameCompleted;
-          final int _tmp_1;
-          _tmp_1 = (int) (_stmt.getLong(_columnIndexOfGameCompleted));
-          _tmpGameCompleted = _tmp_1 != 0;
-          final long _tmpCreatedAt;
-          _tmpCreatedAt = _stmt.getLong(_columnIndexOfCreatedAt);
-          _item = new Player(_tmpId,_tmpName,_tmpRole,_tmpCash,_tmpSacco,_tmpMmf,_tmpLand,_tmpReits,_tmpDebt,_tmpCurrentDay,_tmpGameCompleted,_tmpCreatedAt);
-          _result.add(_item);
+          return _result;
+        } finally {
+          _cursor.close();
         }
-        return _result;
-      } finally {
-        _stmt.close();
+      }
+
+      @Override
+      protected void finalize() {
+        _statement.release();
       }
     });
   }
 
-  @Override
-  public Object deletePlayerById(final long playerId,
-      final Continuation<? super Unit> $completion) {
-    final String _sql = "DELETE FROM players WHERE id = ?";
-    return DBUtil.performSuspending(__db, false, true, (_connection) -> {
-      final SQLiteStatement _stmt = _connection.prepare(_sql);
-      try {
-        int _argIndex = 1;
-        _stmt.bindLong(_argIndex, playerId);
-        _stmt.step();
-        return Unit.INSTANCE;
-      } finally {
-        _stmt.close();
-      }
-    }, $completion);
-  }
-
-  @Override
-  public Object deleteAllPlayers(final Continuation<? super Unit> $completion) {
-    final String _sql = "DELETE FROM players";
-    return DBUtil.performSuspending(__db, false, true, (_connection) -> {
-      final SQLiteStatement _stmt = _connection.prepare(_sql);
-      try {
-        _stmt.step();
-        return Unit.INSTANCE;
-      } finally {
-        _stmt.close();
-      }
-    }, $completion);
-  }
-
   @NonNull
   public static List<Class<?>> getRequiredConverters() {
-    return Collections.emptyList();
+    return Arrays.asList(Converters.class);
+  }
+
+  private synchronized Converters __converters() {
+    if (__converters == null) {
+      __converters = __db.getTypeConverter(Converters.class);
+    }
+    return __converters;
   }
 }

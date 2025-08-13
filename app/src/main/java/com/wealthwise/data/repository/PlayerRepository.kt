@@ -2,8 +2,8 @@ package com.wealthwise.data.repository
 
 import com.wealthwise.data.dao.PlayerDao
 import com.wealthwise.data.dao.TransactionDao
+import com.wealthwise.data.database.entities.TransactionEntity
 import com.wealthwise.data.model.Player
-import com.wealthwise.data.model.Transaction
 import kotlinx.coroutines.flow.Flow
 
 
@@ -30,12 +30,12 @@ class PlayerRepository  constructor(
     suspend fun deletePlayerById(playerId: Long) = playerDao.deletePlayerById(playerId)
     
     // Transaction operations
-    fun getTransactionsByPlayer(playerId: Long): Flow<List<Transaction>> = 
-        transactionDao.getTransactionsByPlayer(playerId)
+    fun getTransactionsByPlayer(playerId: Long): Flow<List<TransactionEntity>> =
+        transactionDao.getTransactionsByPlayer(playerId.toString())
     
-    suspend fun insertTransaction(transaction: Transaction): Long = 
+    suspend fun insertTransaction(transaction: TransactionEntity): Long =
         transactionDao.insertTransaction(transaction)
     
     suspend fun deleteTransactionsByPlayer(playerId: Long) = 
-        transactionDao.deleteTransactionsByPlayer(playerId)
+        transactionDao.deleteTransactionsByPlayer(playerId.toString())
 } 

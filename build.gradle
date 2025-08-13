@@ -2,8 +2,8 @@
 buildscript {
     ext {
         compose_version = '1.5.8'
-        kotlin_version = '2.1.10'
-        room_version = '2.7.2'
+        kotlin_version = '1.9.22'
+        room_version = '2.6.1'
         firebase_bom_version = '32.7.4'
     }
     dependencies {

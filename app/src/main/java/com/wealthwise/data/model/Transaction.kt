@@ -17,6 +17,8 @@ data class Transaction(
 
 enum class TransactionType {
     INCOME,
+    BONUS,
+    BILL_PAYMENT,
     EXPENSE,
     INVESTMENT,
     LOAN,
@@ -26,5 +28,6 @@ enum class TransactionType {
     ASSET_SALE,
     DEBT_PAYMENT,
     INTEREST_EARNED,
-    INTEREST_PAID
+    INTEREST_PAID,
+    GOAL_CONTRIBUTION
 } 
