@@ -10,14 +10,14 @@ import java.util.*
 
 @Entity(
     tableName = "transaction_entities",
-    foreignKeys = [
-        ForeignKey(
-            entity = GameSessionEntity::class,
-            parentColumns = ["session_id"],
-            childColumns = ["session_id"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ]
+//    foreignKeys = [
+//        ForeignKey(
+//            entity = GameSessionEntity::class,
+//            parentColumns = ["session_id"],
+//            childColumns = ["session_id"],
+//            onDelete = ForeignKey.CASCADE
+//        )
+//    ]
 )
 data class TransactionEntity(
     @PrimaryKey

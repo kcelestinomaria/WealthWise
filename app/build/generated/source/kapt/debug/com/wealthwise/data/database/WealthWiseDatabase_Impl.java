@@ -58,7 +58,7 @@ public final class WealthWiseDatabase_Impl extends WealthWiseDatabase {
   @Override
   @NonNull
   protected SupportSQLiteOpenHelper createOpenHelper(@NonNull final DatabaseConfiguration config) {
-    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(config, new RoomOpenHelper.Delegate(4) {
+    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(config, new RoomOpenHelper.Delegate(5) {
       @Override
       public void createAllTables(@NonNull final SupportSQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS `players` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `role` TEXT NOT NULL, `cash` REAL NOT NULL, `sacco` REAL NOT NULL, `mmf` REAL NOT NULL, `land` REAL NOT NULL, `reits` REAL NOT NULL, `debt` REAL NOT NULL, `currentDay` INTEGER NOT NULL, `gameCompleted` INTEGER NOT NULL, `createdAt` INTEGER NOT NULL)");
@@ -69,13 +69,13 @@ public final class WealthWiseDatabase_Impl extends WealthWiseDatabase {
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_game_sessions_user_id` ON `game_sessions` (`user_id`)");
         db.execSQL("CREATE TABLE IF NOT EXISTS `goals` (`goal_id` TEXT NOT NULL, `session_id` TEXT NOT NULL, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `target_amount` INTEGER NOT NULL, `current_amount` INTEGER NOT NULL, `category` TEXT NOT NULL, `icon` TEXT NOT NULL, `is_completed` INTEGER NOT NULL, `created_at` INTEGER NOT NULL, `completed_at` INTEGER, `priority` INTEGER NOT NULL, `deadline` INTEGER, `is_synced` INTEGER NOT NULL, PRIMARY KEY(`goal_id`), FOREIGN KEY(`session_id`) REFERENCES `game_sessions`(`session_id`) ON UPDATE NO ACTION ON DELETE CASCADE )");
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_goals_session_id` ON `goals` (`session_id`)");
-        db.execSQL("CREATE TABLE IF NOT EXISTS `transaction_entities` (`transaction_id` TEXT NOT NULL, `session_id` TEXT NOT NULL, `player_id` TEXT NOT NULL, `type` TEXT NOT NULL, `amount` INTEGER NOT NULL, `description` TEXT NOT NULL, `category` TEXT, `day` INTEGER NOT NULL, `balance_before` INTEGER NOT NULL, `balance_after` INTEGER NOT NULL, `goal_id` TEXT, `created_at` INTEGER NOT NULL, `is_synced` INTEGER NOT NULL, PRIMARY KEY(`transaction_id`), FOREIGN KEY(`session_id`) REFERENCES `game_sessions`(`session_id`) ON UPDATE NO ACTION ON DELETE CASCADE )");
+        db.execSQL("CREATE TABLE IF NOT EXISTS `transaction_entities` (`transaction_id` TEXT NOT NULL, `session_id` TEXT NOT NULL, `player_id` TEXT NOT NULL, `type` TEXT NOT NULL, `amount` INTEGER NOT NULL, `description` TEXT NOT NULL, `category` TEXT, `day` INTEGER NOT NULL, `balance_before` INTEGER NOT NULL, `balance_after` INTEGER NOT NULL, `goal_id` TEXT, `created_at` INTEGER NOT NULL, `is_synced` INTEGER NOT NULL, PRIMARY KEY(`transaction_id`))");
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_transaction_entities_session_id` ON `transaction_entities` (`session_id`)");
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_transaction_entities_player_id` ON `transaction_entities` (`player_id`)");
         db.execSQL("CREATE TABLE IF NOT EXISTS `achievements` (`achievement_id` TEXT NOT NULL, `user_id` TEXT NOT NULL, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `icon` TEXT NOT NULL, `is_unlocked` INTEGER NOT NULL, `unlocked_at` INTEGER, `progress` INTEGER NOT NULL, `target` INTEGER NOT NULL, `reward_amount` INTEGER NOT NULL, `is_synced` INTEGER NOT NULL, PRIMARY KEY(`achievement_id`), FOREIGN KEY(`user_id`) REFERENCES `users`(`user_id`) ON UPDATE NO ACTION ON DELETE CASCADE )");
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_achievements_user_id` ON `achievements` (`user_id`)");
         db.execSQL("CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)");
-        db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4c52386941924f9e1befa10e7dee8ca3')");
+        db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1781dcf026cd8d46cfefcac5c7c7c79c')");
       }
 
       @Override
@@ -280,8 +280,7 @@ public final class WealthWiseDatabase_Impl extends WealthWiseDatabase {
         _columnsTransactionEntities.put("goal_id", new TableInfo.Column("goal_id", "TEXT", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsTransactionEntities.put("created_at", new TableInfo.Column("created_at", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsTransactionEntities.put("is_synced", new TableInfo.Column("is_synced", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
-        final HashSet<TableInfo.ForeignKey> _foreignKeysTransactionEntities = new HashSet<TableInfo.ForeignKey>(1);
-        _foreignKeysTransactionEntities.add(new TableInfo.ForeignKey("game_sessions", "CASCADE", "NO ACTION", Arrays.asList("session_id"), Arrays.asList("session_id")));
+        final HashSet<TableInfo.ForeignKey> _foreignKeysTransactionEntities = new HashSet<TableInfo.ForeignKey>(0);
         final HashSet<TableInfo.Index> _indicesTransactionEntities = new HashSet<TableInfo.Index>(2);
         _indicesTransactionEntities.add(new TableInfo.Index("index_transaction_entities_session_id", false, Arrays.asList("session_id"), Arrays.asList("ASC")));
         _indicesTransactionEntities.add(new TableInfo.Index("index_transaction_entities_player_id", false, Arrays.asList("player_id"), Arrays.asList("ASC")));
@@ -317,7 +316,7 @@ public final class WealthWiseDatabase_Impl extends WealthWiseDatabase {
         }
         return new RoomOpenHelper.ValidationResult(true, null);
       }
-    }, "4c52386941924f9e1befa10e7dee8ca3", "87874a9e36e327fe7af0eb6a4c5d8574");
+    }, "1781dcf026cd8d46cfefcac5c7c7c79c", "10de00a45a4c1c7d1c3c490059c9a876");
     final SupportSQLiteOpenHelper.Configuration _sqliteConfig = SupportSQLiteOpenHelper.Configuration.builder(config.context).name(config.name).callback(_openCallback).build();
     final SupportSQLiteOpenHelper _helper = config.sqliteOpenHelperFactory.create(_sqliteConfig);
     return _helper;

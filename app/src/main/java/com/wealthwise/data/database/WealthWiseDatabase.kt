@@ -34,7 +34,7 @@ import com.wealthwise.data.model.Transaction
         TransactionEntity::class,
         AchievementEntity::class
     ],
-    version = 4,
+    version = 5,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
